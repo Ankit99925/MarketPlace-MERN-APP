@@ -1,0 +1,98 @@
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { logout } from "../store/slices/authSlice";
+const NavBar = () => {
+  const { isLoggedIn, userType } = useSelector((state) => state.auth);
+  const dispatch = useDispatch((state) => state.auth);
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
+  return (
+    <nav className="flex justify-between items-center px-6 py-4 bg-green-100 border-b border-green-300 shadow-lg">
+      {/* Logo Section */}
+      <div className="flex items-center space-x-3">
+        <img
+          src="/logo.png"
+          alt="MarketPlace Logo"
+          className="h-12 rounded-full shadow-md"
+        />
+        <h1 className="text-2xl font-extrabold text-green-800">
+          Nursery Market
+        </h1>
+      </div>
+
+      {/* Search Bar */}
+      <div className="flex-1 mx-8">
+        <input
+          type="text"
+          placeholder="Search for plants, tools, and more..."
+          className="w-full p-3 rounded-full border border-green-400 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-md"
+        />
+      </div>
+
+      {/* Navigation Links */}
+      <div className="flex items-center space-x-6">
+        <Link
+          to="/"
+          className="text-green-800 font-semibold hover:text-green-900"
+        >
+          Home
+        </Link>
+
+        {isLoggedIn && userType === "Seller" && (
+          <Link
+            to="/addProduct"
+            className="text-green-800 font-semibold hover:text-green-900"
+          >
+            Add Product
+          </Link>
+        )}
+        {isLoggedIn && userType === "Customer" && (
+          <div className="flex space-x-4">
+            <Link
+              to="/cart"
+              className="text-green-800 font-semibold hover:text-green-900"
+            >
+              Cart
+            </Link>
+            <Link
+              to="/orders"
+              className="text-green-800 font-semibold hover:text-green-900"
+            >
+              Orders
+            </Link>
+          </div>
+        )}
+
+        {/* Login and Signup Buttons */}
+        {!isLoggedIn && (
+          <div className="flex space-x-4">
+            <Link
+              to="/login"
+              className="px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-lg"
+            >
+              Login
+            </Link>
+            <Link
+              to="/signup"
+              className="px-4 py-2 bg-yellow-600 text-white rounded-full hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 shadow-lg"
+            >
+              Signup
+            </Link>
+          </div>
+        )}
+        {isLoggedIn && (
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-lg"
+          >
+            Logout
+          </button>
+        )}
+      </div>
+    </nav>
+  );
+};
+
+export default NavBar;
