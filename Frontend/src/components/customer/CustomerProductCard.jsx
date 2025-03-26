@@ -18,6 +18,7 @@ const CustomerProductCard = ({ product, cart }) => {
 
   return (
     <div className="bg-green-50 border border-green-200 rounded-lg shadow-md p-4">
+      
       <img
         src={product.imageUrl || "/placeholder.png"}
         alt={product.productName}

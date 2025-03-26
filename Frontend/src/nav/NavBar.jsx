@@ -1,11 +1,18 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { logout } from "../store/slices/authSlice";
+import { sortProducts } from "../store/slices/customerSlice";
 const NavBar = () => {
   const { isLoggedIn, userType } = useSelector((state) => state.auth);
-  const dispatch = useDispatch((state) => state.auth);
+  const { searchTerm, sortBy } = useSelector((state) => state.customer);
+
+  const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logout());
+  };
+  const handleSearch = (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    dispatch(sortProducts({ sortBy, searchTerm }));
   };
 
   return (
@@ -25,6 +32,7 @@ const NavBar = () => {
       {/* Search Bar */}
       <div className="flex-1 mx-8">
         <input
+          onChange={handleSearch}
           type="text"
           placeholder="Search for plants, tools, and more..."
           className="w-full p-3 rounded-full border border-green-400 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-md"

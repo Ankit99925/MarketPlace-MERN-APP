@@ -6,6 +6,9 @@ const initialState = {
   products: [],
   cart: [],
   orders: [],
+  sortedProducts: [],
+  searchTerm: "",
+  sortBy: "All",
   isLoading: false,
   errorMessages: [],
 };
@@ -64,16 +67,42 @@ export const placeOrder = createAsyncThunk("customer/placeOrder", async () => {
 const customerSlice = createSlice({
   name: "customer",
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    sortProducts: (state, action) => {
+      const { sortBy, searchTerm } = action.payload;
+
+      let filteredProducts = state.products;
+
+      if (sortBy && sortBy !== "All") {
+        filteredProducts = filteredProducts.filter(
+          (product) => product.category === sortBy
+        );
+      }
+      if (searchTerm && searchTerm.trim() !== "") {
+        filteredProducts = filteredProducts.filter((product) =>
+          product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+      state.sortedProducts = filteredProducts;
+
+      if (state.sortedProducts.length === 0) {
+        state.errorMessages = ["No products found"];
+      } else {
+        state.errorMessages = [];
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchCustomerData.pending, (state) => {
       state.isLoading = true;
     });
     builder.addCase(fetchCustomerData.fulfilled, (state, action) => {
       state.isLoading = false;
+      console.log("Customer data fetched successfully", action.payload);
       const { products, cart, orders } = action.payload;
       state.products = products;
       state.cart = cart;
+      state.sortedProducts = products;
       state.orders = orders;
     });
     builder.addCase(fetchCustomerData.rejected, (state, action) => {
@@ -95,5 +124,5 @@ const customerSlice = createSlice({
     });
   },
 });
-
+export const { sortProducts } = customerSlice.actions;
 export default customerSlice.reducer;
