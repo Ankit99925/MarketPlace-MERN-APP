@@ -1,8 +1,14 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-const AddProduct = () => {
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  fetchSellerProducts,
+editProduct 
+} from "../../store/slices/sellerSlice";
+const EditProduct = () => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
   const productNameRef = useRef();
   const brandRef = useRef();
   const priceRef = useRef();
@@ -12,8 +18,21 @@ const AddProduct = () => {
   const ratingRef = useRef();
   const navigate = useNavigate();
   const jwtToken = useSelector((state) => state.auth);
+  useEffect(() => {
+    dispatch(fetchSellerProducts());
+  }, [dispatch]);
+  const { products } = useSelector((state) => state.seller);
 
-  const handleAddProduct = async (e) => {
+  console.log("token", jwtToken);
+
+  const product = products.find((product) => {
+    return product._id === id;
+  });
+  if (!product) {
+    return <div>Loading...</div>; // Show a loading message while the product is being fetched
+  }
+
+  const handleEditProduct = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("productName", productNameRef.current.value);
@@ -23,11 +42,14 @@ const AddProduct = () => {
     formData.append("description", descriptionRef.current.value);
     formData.append("image", imageRef.current.files[0]);
     formData.append("rating", ratingRef.current.value);
-    await axios.post(
-      "http://localhost:3000/api/seller/createProduct/",
-      formData,
-      { headers: { Authorization: `Bearer ${jwtToken.jwtToken}` } }
-    );
+    // const response = await axios.patch(
+    //   `http://localhost:3000/api/seller/editProduct/${product._id}`,
+    //   formData,
+    //   { headers: { Authorization: `Bearer ${jwtToken.token}` } }
+    // );
+    // console.log("response", response);
+    await dispatch(editProduct({ id: product._id, formData })).unwrap();
+    // dispatch(updateProduct({ id: product._id, formData }));
     navigate("/");
   };
 
@@ -36,9 +58,9 @@ const AddProduct = () => {
       <section className="bg-white dark:bg-gray-900">
         <div className="py-8 px-6 mx-auto max-w-2xl lg:py-16">
           <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white text-center">
-            Add a New Product
+            Edit Product
           </h2>
-          <form action="POST" onSubmit={handleAddProduct}>
+          <form action="POST" onSubmit={handleEditProduct}>
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <label
@@ -49,6 +71,7 @@ const AddProduct = () => {
                 </label>
                 <input
                   ref={productNameRef}
+                  defaultValue={product?.productName}
                   type="text"
                   name="name"
                   id="name"
@@ -66,6 +89,7 @@ const AddProduct = () => {
                 </label>
                 <input
                   ref={brandRef}
+                  defaultValue={product.brand}
                   type="text"
                   name="brand"
                   id="brand"
@@ -83,6 +107,7 @@ const AddProduct = () => {
                 </label>
                 <input
                   ref={priceRef}
+                  defaultValue={product.price}
                   type="number"
                   name="price"
                   id="price"
@@ -100,6 +125,7 @@ const AddProduct = () => {
                 </label>
                 <select
                   ref={categoryRef}
+                  defaultValue={product.category}
                   id="category"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 >
@@ -118,6 +144,7 @@ const AddProduct = () => {
                 </label>
                 <input
                   ref={ratingRef}
+                  defaultValue={product.rating}
                   type="number"
                   name="rating"
                   id="rating"
@@ -137,6 +164,7 @@ const AddProduct = () => {
                 </label>
                 <textarea
                   ref={descriptionRef}
+                  defaultValue={product.description}
                   id="description"
                   rows="6"
                   className="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
@@ -152,6 +180,13 @@ const AddProduct = () => {
                 >
                   Upload Product Image
                 </label>
+                {product.imageUrl && (
+                  <img
+                    src={product.imageUrl}
+                    alt="Product"
+                    className="w-32 h-32 mb-4"
+                  />
+                )}
                 <input
                   ref={imageRef}
                   type="file"
@@ -173,7 +208,7 @@ const AddProduct = () => {
                 type="submit"
                 className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg cursor-pointer focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 hover:from-blue-600 hover:to-purple-700"
               >
-                Add Product
+                Edit Product
               </button>
             </div>
           </form>
@@ -183,4 +218,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default EditProduct;

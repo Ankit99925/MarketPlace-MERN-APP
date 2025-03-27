@@ -1,4 +1,6 @@
+import { useNavigate } from "react-router-dom";
 const CustomerProductCard = ({ product, delProduct }) => {
+  const navigate = useNavigate();
   return (
     <div className="bg-green-50 border border-green-200 rounded-lg shadow-md p-4">
       <img
@@ -31,7 +33,10 @@ const CustomerProductCard = ({ product, delProduct }) => {
         {product.stock > 0 ? `${product.stock} available` : "Out of stock"}
       </p>
       <div className="flex space-x-4">
-        <button className="w-full bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400">
+        <button
+          onClick={() => navigate(`/editproduct/${product._id}`)}
+          className="w-full bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+        >
           Edit
         </button>
         <button

@@ -24,7 +24,7 @@ const SellerHome = () => {
       `http://localhost:3000/api/seller/deleteProduct/${productid}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    console.log(response);
+
     dispatch(deleteProduct(productid));
   };
 

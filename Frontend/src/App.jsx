@@ -9,6 +9,7 @@ import SellerHome from "./components/seller/SellerHome";
 import CustomerHome from "./components/customer/CustomerHome";
 import Cart from "./components/customer/cart/Cart";
 import Orders from "./components/customer/Orders";
+import EditProduct from "./components/seller/EditProduct";
 
 function App() {
   const { userType } = useSelector((state) => state.auth);
@@ -21,6 +22,7 @@ function App() {
           element={userType === "Seller" ? <SellerHome /> : <CustomerHome />}
         />
         <Route path="/addProduct" element={<AddProduct />} />
+        <Route path="/editProduct/:id" element={<EditProduct />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/login" element={<Login />} />

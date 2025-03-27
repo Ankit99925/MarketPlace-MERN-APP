@@ -16,11 +16,11 @@ const getPublicId = (existingImageUrl) => {
   const publicId = fileName.split(".")[0]; // Remove file extension
   return publicId;
 };
-const updateToCloudinary = async (req, res, next) => {
+const editUpdateToCloudinary = async (req, res, next) => {
   const { id } = req.params;
 
   if (!req.file) {
-    next();
+    return next();
   }
   const product = await Product.findById(id);
   const existingImageUrl = product.imageUrl;
@@ -43,9 +43,8 @@ const updateToCloudinary = async (req, res, next) => {
   );
 
   // Pipe file buffer to Cloudinary
-  
-  console.log(req.file.buffer);
-  streamifier.createReadStream(req.file.buffer).pipe(stream);console.log(req.fileUrl);
+
+  streamifier.createReadStream(req.file.buffer).pipe(stream);
 };
 
-module.exports = { upload, updateToCloudinary };
+module.exports = { upload, editUpdateToCloudinary };

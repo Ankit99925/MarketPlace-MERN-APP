@@ -44,7 +44,7 @@ exports.editProduct = async (req, res) => {
   if (!id) {
     res.status(404).json({ message: "Product not Found" });
   }
-  const product = await Product.updateOne({
+  const product = await Product.findByIdAndUpdate(id, {
     productName,
     brand,
     price,
@@ -53,13 +53,13 @@ exports.editProduct = async (req, res) => {
     category,
     rating,
   });
-  res.status(201).json({product},{ message: "Product updated Successfully" });
+  res.status(201).json({ product, message: "Product updated Successfully" });
 };
 
 exports.deleteProduct = async (req, res) => {
   const { id } = req.params;
   const product = await Product.findById(id);
-  if (!id) {
+  if (!product) {
     return res.status(404).json({ message: "Product not Found" });
   }
   await Product.deleteOne({ _id: id });
