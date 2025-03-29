@@ -64,6 +64,18 @@ export const placeOrder = createAsyncThunk("customer/placeOrder", async () => {
   return res.data;
 });
 
+export const fetchPublicProducts = createAsyncThunk(
+  "customer/fetchPublicProducts",
+  async () => {
+    const res = await axios("http://localhost:3000/");
+    if (res.status === 200) {
+      return res.data;
+    } else {
+      throw new Error(res.statusText || "Failed to fetch products");
+    }
+  }
+);
+
 const customerSlice = createSlice({
   name: "customer",
   initialState: initialState,
@@ -121,6 +133,19 @@ const customerSlice = createSlice({
     builder.addCase(placeOrder.fulfilled, (state, action) => {
       state.orders.push(action.payload);
       state.cart = [];
+    });
+
+    builder.addCase(fetchPublicProducts.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchPublicProducts.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.products = action.payload.products;
+      state.sortedProducts = action.payload.products;
+    });
+    builder.addCase(fetchPublicProducts.rejected, (state, action) => {
+      state.isLoading = false;
+      state.errorMessages = [action.error.message];
     });
   },
 });

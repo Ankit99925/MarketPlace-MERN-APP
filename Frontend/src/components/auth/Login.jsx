@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../store/slices/authSlice";
@@ -72,6 +72,16 @@ const Login = () => {
               required
             />
           </div>
+          <div className="mb-4 text-right">
+            <Link
+              to="/forgotPassword"
+              className="text-sm text-blue-500 hover:underline"
+            >
+              {" "}
+              Forgot password?
+            </Link>
+          </div>
+
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
   userType: { type: String, required: true, enum: ["Customer", "Seller"] },
   cart: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product", default: [] }],
   orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "order", default: [] }],
+  otp: { type: String },
+  otpExpiry: { type: Date },
 });
 
 module.exports = mongoose.model("User", userSchema);

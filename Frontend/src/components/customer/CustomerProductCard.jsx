@@ -4,7 +4,7 @@ import {
   removeProductFromCart,
 } from "../../store/slices/customerSlice";
 
-const CustomerProductCard = ({ product, cart }) => {
+const CustomerProductCard = ({ product, cart, isPublic = false }) => {
   const dispatch = useDispatch();
   const token = localStorage.getItem("jwtToken");
 
@@ -18,7 +18,6 @@ const CustomerProductCard = ({ product, cart }) => {
 
   return (
     <div className="bg-green-50 border border-green-200 rounded-lg shadow-md p-4">
-      
       <img
         src={product.imageUrl || "/placeholder.png"}
         alt={product.productName}
@@ -48,23 +47,25 @@ const CustomerProductCard = ({ product, cart }) => {
         Stock:{" "}
         {product.stock > 0 ? `${product.stock} available` : "Out of stock"}
       </p>
-      <div className="flex justify-center">
-        {isInCart ? (
-          <button
-            onClick={() => handleRemoveFromCart(product._id)}
-            className="px-4 py-2 text-sm font-medium rounded-full focus:outline-none focus:ring-2 shadow-md bg-red-500 text-white hover:bg-red-600 focus:ring-red-400"
-          >
-            Remove From Cart
-          </button>
-        ) : (
-          <button
-            onClick={() => handleAddToCart(product._id)}
-            className="px-4 py-2 text-sm font-medium rounded-full focus:outline-none focus:ring-2 shadow-md bg-green-500 text-white hover:bg-green-600 focus:ring-green-400"
-          >
-            Add To Cart
-          </button>
-        )}
-      </div>
+      {!isPublic && (
+        <div className="flex justify-center">
+          {isInCart ? (
+            <button
+              onClick={() => handleRemoveFromCart(product._id)}
+              className="px-4 py-2 text-sm font-medium rounded-full focus:outline-none focus:ring-2 shadow-md bg-red-500 text-white hover:bg-red-600 focus:ring-red-400"
+            >
+              Remove From Cart
+            </button>
+          ) : (
+            <button
+              onClick={() => handleAddToCart(product._id)}
+              className="px-4 py-2 text-sm font-medium rounded-full focus:outline-none focus:ring-2 shadow-md bg-green-500 text-white hover:bg-green-600 focus:ring-green-400"
+            >
+              Add To Cart
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 };

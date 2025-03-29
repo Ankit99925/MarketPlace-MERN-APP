@@ -10,16 +10,30 @@ import CustomerHome from "./components/customer/CustomerHome";
 import Cart from "./components/customer/cart/Cart";
 import Orders from "./components/customer/Orders";
 import EditProduct from "./components/seller/EditProduct";
+import ForgotPassword from "./components/auth/ForgotPassword";
+import ResetPassword from "./components/auth/ResetPassword";
+import VerifyOtp from "./components/auth/VerifyOtp";
+import LandingPage from "./components/LandingPage";
 
 function App() {
-  const { userType } = useSelector((state) => state.auth);
+  const { isLoggedIn, userType } = useSelector((state) => state.auth);
   return (
     <BrowserRouter>
       <NavBar />
       <Routes>
         <Route
           path="/"
-          element={userType === "Seller" ? <SellerHome /> : <CustomerHome />}
+          element={
+            isLoggedIn ? (
+              userType === "Seller" ? (
+                <SellerHome />
+              ) : (
+                <CustomerHome />
+              )
+            ) : (
+              <LandingPage />
+            )
+          }
         />
         <Route path="/addProduct" element={<AddProduct />} />
         <Route path="/editProduct/:id" element={<EditProduct />} />
@@ -27,6 +41,9 @@ function App() {
         <Route path="/orders" element={<Orders />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path="/resetPassword" element={<ResetPassword />} />
+        <Route path="/verifyOtp" element={<VerifyOtp />} />
       </Routes>
     </BrowserRouter>
   );

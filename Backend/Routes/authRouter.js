@@ -41,4 +41,7 @@ authRouter.post(
   authController.login
 );
 // authRouter.post("/head", readAuthToken);
+authRouter.post("/forgotPassword", authController.forgotPassword);
+authRouter.post("/resetPassword", authController.resetPassword);
+authRouter.post("/verifyOtp", authController.verifyOtp);
 module.exports = authRouter;

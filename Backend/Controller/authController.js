@@ -1,4 +1,8 @@
 const User = require("../models/userModel");
+const otpGenerator = require("otp-generator");
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 exports.signup = async (req, res) => {
@@ -79,6 +83,139 @@ exports.login = async (req, res) => {
       status: "success",
       jwtToken,
       userType: user.userType,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "failed",
+      message: err.message,
+    });
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Please provide email",
+      });
+    }
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        status: "failed",
+        message: "User not found",
+      });
+    }
+    const otp = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
+    const otpExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
+    user.otp = otp;
+    user.otpExpiry = otpExpiry;
+    await user.save();
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: "10m",
+    });
+    // Send OTP to user's email
+    const msg = {
+      to: email,
+      from: process.env.SENDGRID_FROM_EMAIL,
+      subject: "Password Reset OTP",
+      text: `Your OTP for password reset is ${otp} It is valid for 10 minutes.`,
+    };
+    await sgMail.send(msg);
+    res
+      .cookie("otpToken", token, {
+        httpOnly: false, // Must be false to be visible in Application tab
+        secure: false, // Must be false for localhost
+        sameSite: "lax",
+        domain: "localhost", // Add this
+        path: "/",
+        maxAge: 10 * 60 * 1000,
+      })
+      .status(200)
+      .json({ message: "OTP sent to your email" });
+  } catch (err) {
+    res.status(400).json({
+      status: "failed",
+      message: err.message,
+    });
+  }
+};
+exports.verifyOtp = async (req, res) => {
+  const { otp } = req.body;
+  const { otpToken } = req.cookies;
+
+  try {
+    if (!otp) {
+      return res.status(400).json({ error: "OTP is required" });
+    }
+    if (!otpToken) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(otpToken, process.env.JWT_SECRET);
+    if (!decodedToken) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const { email } = decodedToken;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        status: "failed",
+        message: "User not found",
+      });
+    }
+    if (user.otp !== otp) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Invalid OTP",
+      });
+    }
+    if (Date.now() > user.otpExpiry) {
+      return res.status(400).json({
+        status: "failed",
+        message: "OTP has expired",
+      });
+    }
+
+    res.status(200).json({ message: "OTP verified successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  const { newPassword, confirmNewPassword } = req.body;
+  const { otpToken } = req.cookies;
+  const decodedToken = jwt.verify(otpToken, process.env.JWT_SECRET);
+  const { email } = decodedToken;
+  try {
+    if (!email || !newPassword || !confirmNewPassword) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Please provide all required fields",
+      });
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Passwords do not match",
+      });
+    }
+    const user = await User.findOne({ email });
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.otp = undefined;
+    user.otpExpiry = undefined;
+    await user.save();
+    res.status(200).json({
+      status: "success",
+      message: "Password reset successfully",
     });
   } catch (err) {
     res.status(400).json({
