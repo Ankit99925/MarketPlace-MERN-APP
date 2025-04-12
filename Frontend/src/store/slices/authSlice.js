@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-  isAuthenticated: !!localStorage.getItem('jwtToken'),
-  jwtToken: localStorage.getItem('jwtToken') || null,
-  userType: localStorage.getItem('userType') || null,
-  firstName: localStorage.getItem('firstName') || null,
-  lastName: localStorage.getItem('lastName') || null,
-  profilePicture: localStorage.getItem('profilePicture') || null,
+  isAuthenticated: !!localStorage.getItem("jwtToken"),
+  jwtToken: localStorage.getItem("jwtToken") || null,
+  userType: localStorage.getItem("userType") || null,
+  firstName: localStorage.getItem("firstName") || null,
+  lastName: localStorage.getItem("lastName") || null,
+  profilePicture: localStorage.getItem("profilePicture") || null,
 };
 
 const authSlice = createSlice({
@@ -19,6 +19,10 @@ const authSlice = createSlice({
       state.firstName = action.payload.firstName;
       state.lastName = action.payload.lastName;
       state.profilePicture = action.payload.profilePicture;
+
+      localStorage.setItem("jwtToken", action.payload.jwtToken);
+      localStorage.setItem("userType", action.payload.userType);
+      localStorage.setItem("firstName", action.payload.firstName);
     },
     logout: (state) => {
       state.isAuthenticated = false;
@@ -28,11 +32,11 @@ const authSlice = createSlice({
       state.lastName = null;
       state.profilePicture = null;
       // Clear localStorage
-      localStorage.removeItem('jwtToken');
-      localStorage.removeItem('userType');
-      localStorage.removeItem('firstName');
-      localStorage.removeItem('lastName');
-      localStorage.removeItem('profilePicture');
+      localStorage.removeItem("jwtToken");
+      localStorage.removeItem("userType");
+      localStorage.removeItem("firstName");
+      localStorage.removeItem("lastName");
+      localStorage.removeItem("profilePicture");
     },
   },
 });

@@ -23,6 +23,29 @@ export const fetchSellerProducts = createAsyncThunk(
   }
 );
 
+export const createProduct = createAsyncThunk(
+  "seller/createProduct",
+  async (data) => {
+    const token = localStorage.getItem("jwtToken");
+    console.log(data);
+    const res = await axios.post(
+      "http://localhost:3000/api/seller/createProduct",
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    if (res.status === 201) {
+      console.log("Product created successfully", res);
+      return res.data.product;
+    } else {
+      throw new Error(res.statusText || "Failed to create product");
+    }
+  }
+);
 export const editProduct = createAsyncThunk(
   "seller/editProduct",
   async ({ id, formData }) => {
@@ -39,7 +62,21 @@ export const editProduct = createAsyncThunk(
     }
   }
 );
-
+export const deleteProduct = createAsyncThunk(
+  "seller/deleteProduct",
+  async (id) => {
+    const token = localStorage.getItem("jwtToken");
+    const res = await axios.delete(
+      `http://localhost:3000/api/seller/deleteProduct/${id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (res.status === 200) {
+      return res.data.product;
+    } else {
+      throw new Error(res.statusText || "Failed to delete product");
+    }
+  }
+);
 const sellerSlice = createSlice({
   name: "seller",
   initialState: initialState,
@@ -56,7 +93,7 @@ const sellerSlice = createSlice({
         state.products[productIndex] = action.payload;
       }
     },
-    deleteProduct: (state, action) => {
+    removeProduct: (state, action) => {
       state.products = state.products.filter(
         (product) => product._id !== action.payload
       );
@@ -74,8 +111,39 @@ const sellerSlice = createSlice({
       state.isLoading = false;
       state.errorMessages = [action.error.message];
     });
+    builder.addCase(createProduct.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(createProduct.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.products.push(action.payload);
+    });
+    builder.addCase(createProduct.rejected, (state, action) => {
+      state.isLoading = false;
+      state.errorMessages = [action.error.message];
+    });
+    builder.addCase(editProduct.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(editProduct.fulfilled, (state, action) => {
+      state.isLoading = false;
+    });
+    builder
+      .addCase(deleteProduct.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.products = state.products.filter(
+          (product) => product._id !== action.payload._id
+        );
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.errorMessages = [action.error.message];
+      });
   },
 });
 
-export const { addProduct, deleteProduct, updateProduct } = sellerSlice.actions;
+export const { addProduct, removeProduct, updateProduct } = sellerSlice.actions;
 export default sellerSlice.reducer;

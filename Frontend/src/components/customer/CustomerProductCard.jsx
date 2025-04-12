@@ -6,7 +6,6 @@ import {
 
 const CustomerProductCard = ({ product, cart, isPublic = false }) => {
   const dispatch = useDispatch();
-  const token = localStorage.getItem("jwtToken");
 
   const isInCart = cart.includes(product._id); // Use cart prop to check if product is in cart
   const handleAddToCart = async (productId) => {

@@ -14,29 +14,37 @@ const Orders = () => {
   useEffect(() => {
     dispatch(fetchCustomerData());
   }, [dispatch]);
-  console.log("Orders", orders);
+
+  // Debug logs
+  console.log("Orders Component State:", {
+    products: products,
+    orders: orders,
+    isLoading: isLoading,
+  });
+
+  console.log("Raw order data:", orders);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <div className="text-green-700 font-semibold text-lg">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-green-50 p-6">
       <h1 className="text-3xl font-bold text-green-800 mb-6 text-center">
         Your Orders
       </h1>
-      {isLoading && (
-        <div className="flex justify-center items-center">
-          <div className="text-green-700 font-semibold text-lg">
-            Loading your products...
-          </div>
-        </div>
-      )}{" "}
+
       {!isLoading && errorMessages && errorMessages.length > 0 && (
         <ErrorMessages errorMessages={errorMessages} />
       )}
       {!isLoading && orders.length > 0 && (
-        
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          
-          {orders.map((order) => (
-            <Order key={order.id} order={order} products={products} />
+          {orders?.map((order) => (
+            <Order key={order._id} order={order} products={products} />
           ))}
         </div>
       )}

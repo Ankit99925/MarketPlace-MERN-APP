@@ -30,3 +30,10 @@ exports.isCustomer = (req, res, next) => {
   }
   next();
 };
+
+exports.isAdmin = (req, res, next) => {
+  if (req.userType !== "Admin") {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+  next();
+};

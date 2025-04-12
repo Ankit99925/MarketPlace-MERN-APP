@@ -19,10 +19,10 @@ export const fetchCustomerData = createAsyncThunk(
   "customer/fetchCustomerData",
   async () => {
     const token = AuthHelper();
-    const res = await axios("http://localhost:3000/api/customer/data", {
+    const res = await axios.get("http://localhost:3000/api/customer/data", {
       headers: { Authorization: `Bearer ${token}` },
     });
-
+    console.log(res.data);
     if (res.status === 200) {
       return res.data;
     } else {
@@ -55,8 +55,6 @@ export const removeProductFromCart = createAsyncThunk(
   }
 );
 
-
-
 export const fetchPublicProducts = createAsyncThunk(
   "customer/fetchPublicProducts",
   async () => {
@@ -68,7 +66,6 @@ export const fetchPublicProducts = createAsyncThunk(
     }
   }
 );
-
 
 const customerSlice = createSlice({
   name: "customer",
@@ -108,7 +105,6 @@ const customerSlice = createSlice({
     });
     builder.addCase(fetchCustomerData.fulfilled, (state, action) => {
       state.isLoading = false;
-      console.log("Customer data fetched successfully", action.payload);
       const { products, cart, orders } = action.payload;
       state.products = products;
       state.cart = cart;

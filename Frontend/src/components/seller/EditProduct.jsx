@@ -1,219 +1,379 @@
-import { useEffect, useRef } from "react";
-import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  fetchSellerProducts,
-editProduct 
-} from "../../store/slices/sellerSlice";
+import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { editProduct } from "../../store/slices/sellerSlice";
+
 const EditProduct = () => {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const productNameRef = useRef();
-  const brandRef = useRef();
-  const priceRef = useRef();
-  const categoryRef = useRef();
-  const descriptionRef = useRef();
-  const imageRef = useRef();
-  const ratingRef = useRef();
+  const { isLoading, products } = useSelector((state) => state.seller);
   const navigate = useNavigate();
-  const jwtToken = useSelector((state) => state.auth);
-  useEffect(() => {
-    dispatch(fetchSellerProducts());
-  }, [dispatch]);
-  const { products } = useSelector((state) => state.seller);
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const [selectedCategory, setSelectedCategory] = useState("Plant");
+  const [imagePreview, setImagePreview] = useState(null);
 
-  console.log("token", jwtToken);
+  console.log("URL ID:", id); // Check the exact ID from URL
 
-  const product = products.find((product) => {
-    return product._id === id;
-  });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    setError,
+  } = useForm();
+
+  const product = products?.find((p) => p._id === id);
   if (!product) {
-    return <div>Loading...</div>; // Show a loading message while the product is being fetched
+    return <div>Product not found</div>;
+  }
+  console.log("Product:", product);
+  useEffect(() => {
+    if (product) {
+      // Transform data before reset
+      const formData = {
+        ...product,
+        // Convert tags array to comma-separated string if it's an array
+        tags: Array.isArray(product.tags)
+          ? product.tags.join(", ")
+          : product.tags,
+        // Ensure category is set for subcategory dropdown
+        category: product.category || "Plant",
+      };
+
+      // Reset form with transformed data
+      reset(formData);
+
+      // Set related state
+      setSelectedCategory(product.category);
+      setImagePreview(product.imageUrl);
+    }
+  }, [product, reset]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
-  const handleEditProduct = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("productName", productNameRef.current.value);
-    formData.append("brand", brandRef.current.value);
-    formData.append("price", priceRef.current.value);
-    formData.append("category", categoryRef.current.value);
-    formData.append("description", descriptionRef.current.value);
-    formData.append("image", imageRef.current.files[0]);
-    formData.append("rating", ratingRef.current.value);
-    // const response = await axios.patch(
-    //   `http://localhost:3000/api/seller/editProduct/${product._id}`,
-    //   formData,
-    //   { headers: { Authorization: `Bearer ${jwtToken.token}` } }
-    // );
-    // console.log("response", response);
-    await dispatch(editProduct({ id: product._id, formData })).unwrap();
-    // dispatch(updateProduct({ id: product._id, formData }));
-    navigate("/");
+  const categoryMap = {
+    Plant: ["Indoor", "Outdoor", "Hanging"],
+    Seed: ["Flower Seeds", "Vegetable Seeds", "Herbs"],
+    "Plant Care": ["Fertilizers", "Pots", "Tools", "Accessories"],
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      Object.keys(data).forEach((key) => {
+        if (key === "image" && !data.image[0]) {
+          formData.append("image", data.image[0]);
+        } else if (key === "tags" && typeof data.tags === "string") {
+          formData.append(
+            "tags",
+            data.tags.split(",").map((tag) => tag.trim())
+          );
+        } else {
+          formData.append(key, data[key]);
+        }
+      });
+
+      await dispatch(editProduct({ id, formData })).unwrap();
+      navigate("/");
+    } catch (error) {
+      setError("root.serverError", {
+        type: "server",
+        message: error.message || "Failed to edit product",
+      });
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    }
   };
 
   return (
-    <div>
-      <section className="bg-white dark:bg-gray-900">
-        <div className="py-8 px-6 mx-auto max-w-2xl lg:py-16">
-          <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white text-center">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl">
+        {errors.root?.serverError && (
+          <div className="p-4 mb-4 bg-red-50 border-l-4 border-red-500">
+            <p className="text-red-700">{errors.root.serverError.message}</p>
+          </div>
+        )}
+
+        <div className="px-8 py-6 border-b border-gray-200">
+          <h2 className="text-3xl font-bold text-gray-900 text-center">
             Edit Product
           </h2>
-          <form action="POST" onSubmit={handleEditProduct}>
-            <div className="grid gap-6 sm:grid-cols-2">
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="name"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Product Name
-                </label>
-                <input
-                  ref={productNameRef}
-                  defaultValue={product?.productName}
-                  type="text"
-                  name="name"
-                  id="name"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Type product name"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="brand"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Brand
-                </label>
-                <input
-                  ref={brandRef}
-                  defaultValue={product.brand}
-                  type="text"
-                  name="brand"
-                  id="brand"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Product brand"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="price"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Price
-                </label>
-                <input
-                  ref={priceRef}
-                  defaultValue={product.price}
-                  type="number"
-                  name="price"
-                  id="price"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="$2999"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="category"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Category
-                </label>
-                <select
-                  ref={categoryRef}
-                  defaultValue={product.category}
-                  id="category"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                >
-                  <option value="TV">TV/Monitors</option>
-                  <option value="PC">PC</option>
-                  <option value="GA">Gaming/Console</option>
-                  <option value="PH">Phones</option>
-                </select>
-              </div>
-              <div>
-                <label
-                  htmlFor="rating"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Rating
-                </label>
-                <input
-                  ref={ratingRef}
-                  defaultValue={product.rating}
-                  type="number"
-                  name="rating"
-                  id="rating"
-                  min="1"
-                  max="5"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Rate 1-5"
-                  required
-                />
-              </div>
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="description"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Description
-                </label>
-                <textarea
-                  ref={descriptionRef}
-                  defaultValue={product.description}
-                  id="description"
-                  rows="6"
-                  className="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Your description here"
-                ></textarea>
-              </div>
-              <input type="text" />
-              {/* Image Uploader */}
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="image"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Upload Product Image
-                </label>
-                {product.imageUrl && (
-                  <img
-                    src={product.imageUrl}
-                    alt="Product"
-                    className="w-32 h-32 mb-4"
-                  />
-                )}
-                <input
-                  ref={imageRef}
-                  type="file"
-                  name="image"
-                  id="image"
-                  className="border-2 p-1"
-                  accept="image/*"
-                />
-                <label
-                  htmlFor="image"
-                  className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg cursor-pointer focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 hover:from-blue-600 hover:to-purple-700"
-                >
-                  Upload Image
-                </label>
-              </div>
-            </div>
-            <div className="flex justify-center mt-10  ">
-              <button
-                type="submit"
-                className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg cursor-pointer focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 hover:from-blue-600 hover:to-purple-700"
-              >
-                Edit Product
-              </button>
-            </div>
-          </form>
+          <p className="mt-2 text-center text-gray-600">
+            Fill in the details to edit the product
+          </p>
         </div>
-      </section>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="p-8">
+          <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
+            {/* Product Name */}
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Product Name
+              </label>
+              <input
+                {...register("productName", {
+                  required: "Product name is required",
+                })}
+                type="text"
+                className={`mt-1 block w-full rounded-md shadow-sm focus:border-green-500 focus:ring-green-500 
+                  ${errors.productName ? "border-red-300" : "border-gray-300"}`}
+                placeholder="Enter product name"
+              />
+              {errors.productName && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.productName.message}
+                </p>
+              )}
+            </div>
+
+            {/* Brand */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Brand
+              </label>
+              <input
+                {...register("brand", { required: "Brand is required" })}
+                type="text"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                placeholder="Enter brand name"
+              />
+              {errors.brand && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.brand.message}
+                </p>
+              )}
+            </div>
+
+            {/* Price */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Price
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm">$</span>
+                </div>
+                <input
+                  {...register("price", {
+                    required: "Price is required",
+                    min: { value: 0, message: "Price must be positive" },
+                  })}
+                  type="number"
+                  step="0.01"
+                  className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                  placeholder="0.00"
+                />
+              </div>
+              {errors.price && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.price.message}
+                </p>
+              )}
+            </div>
+
+            {/* Stock */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Stock
+              </label>
+              <input
+                {...register("stock", {
+                  required: "Stock is required",
+                  min: { value: 0, message: "Stock must be positive" },
+                })}
+                type="number"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                placeholder="Enter stock quantity"
+              />
+            </div>
+
+            {/* Category */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Category
+              </label>
+              <select
+                {...register("category")}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+              >
+                {Object.keys(categoryMap).map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sub Category */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Sub Category
+              </label>
+              <select
+                {...register("subCategory")}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+              >
+                {categoryMap[selectedCategory].map((subCategory) => (
+                  <option key={subCategory} value={subCategory}>
+                    {subCategory}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Rating */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Rating
+              </label>
+              <input
+                {...register("rating", {
+                  required: "Rating is required",
+                  min: { value: 1, message: "Minimum rating is 1" },
+                  max: { value: 5, message: "Maximum rating is 5" },
+                })}
+                type="number"
+                min="1"
+                max="5"
+                step="0.1"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                placeholder="Rate 1-5"
+              />
+            </div>
+
+            {/* Featured Product */}
+            <div>
+              <label className="flex items-center">
+                <input
+                  {...register("isFeatured")}
+                  type="checkbox"
+                  className="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-500 focus:ring-green-500"
+                />
+                <span className="ml-2 text-sm text-gray-600">
+                  Featured Product
+                </span>
+              </label>
+            </div>
+
+            {/* Tags */}
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Tags (comma separated)
+              </label>
+              <input
+                {...register("tags")}
+                type="text"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                placeholder="organic, indoor, beginner-friendly"
+              />
+            </div>
+
+            {/* Description */}
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Description
+              </label>
+              <textarea
+                {...register("description", {
+                  required: "Description is required",
+                })}
+                rows="4"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                placeholder="Describe your product..."
+              />
+            </div>
+
+            {/* Image Upload */}
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Product Image
+              </label>
+              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                <div className="space-y-1 text-center">
+                  {imagePreview ? (
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="mx-auto h-32 w-32 object-cover rounded-md"
+                    />
+                  ) : (
+                    <svg
+                      className="mx-auto h-12 w-12 text-gray-400"
+                      stroke="currentColor"
+                      fill="none"
+                      viewBox="0 0 48 48"
+                    >
+                      <path
+                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                  <div className="flex text-sm text-gray-600">
+                    <label className="relative cursor-pointer bg-white rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500">
+                      <span>Upload a file</span>
+                      <input
+                        {...register("image", {
+                          validate: {
+                            isImage: (files) =>
+                              !files?.[0] ||
+                              files[0]?.type.startsWith("image/") ||
+                              "File must be an image",
+                            fileSize: (files) =>
+                              !files?.[0] ||
+                              files[0]?.size <= 10000000 ||
+                              "File must be less than 10MB",
+                          },
+                        })}
+                        type="file"
+                        name="image"
+                        className="sr-only"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                      />
+                    </label>
+                    <p className="pl-1">or drag and drop</p>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    PNG, JPG, GIF up to 10MB
+                  </p>
+                </div>
+              </div>
+              {errors.image && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.image.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="mt-6">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
+                ${
+                  isLoading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
+                }`}
+            >
+              {isLoading ? "Editing..." : "Edit Product"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

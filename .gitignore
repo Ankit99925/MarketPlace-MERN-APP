@@ -22,6 +22,7 @@ yarn-error.log*
 .idea/
 .DS_Store
 
+MasterPlan.txt
 # Package locks (if you want to ignore them)
 # package-lock.json
 # /Frontend/package-lock.json

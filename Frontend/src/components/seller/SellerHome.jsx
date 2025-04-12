@@ -4,29 +4,30 @@ import {
   deleteProduct,
   fetchSellerProducts,
 } from "../../store/slices/sellerSlice";
-import axios from "axios";
-import ProductCard from "./ProductCard";
-
+import ProductCard from "../shared/ProductCard";
+import PlantLoader from "../shared/PlantLoader";
 const SellerHome = () => {
   const dispatch = useDispatch();
-
+  const { isAuthenticated, userType } = useSelector((state) => state.auth);
   const { products, isLoading, errorMessages } = useSelector(
     (state) => state.seller
   );
 
   useEffect(() => {
-    dispatch(fetchSellerProducts());
-  }, [dispatch]);
+    if (isAuthenticated && userType === "Seller") {
+      dispatch(fetchSellerProducts());
+    }
+  }, [dispatch, isAuthenticated, userType]);
 
   const handleDeleteProduct = async (productid) => {
-    const token = localStorage.getItem("jwtToken");
-    const response = await axios.delete(
-      `http://localhost:3000/api/seller/deleteProduct/${productid}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
     dispatch(deleteProduct(productid));
   };
+  const handleEditProduct = async (productid) => {
+    dispatch(editProduct(productid));
+  };
+  if (isLoading) {
+    return <PlantLoader />;
+  }
 
   return (
     <div className="min-h-screen bg-green-50 p-6">
@@ -49,16 +50,9 @@ const SellerHome = () => {
               key={product._id}
               product={product}
               delProduct={handleDeleteProduct}
+              editProduct={handleEditProduct}
             />
           ))}
-        </div>
-      )}
-      {!isLoading && errorMessages && errorMessages.length > 0 && (
-        <div className="mb-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-md shadow-sm">
-          <h3 className="text-red-700 font-semibold text-sm mb-2">
-            Error loading products:
-          </h3>
-          <p className="text-red-600 text-sm">{errorMessages}</p>
         </div>
       )}
 

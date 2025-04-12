@@ -11,6 +11,7 @@ cloudinary.config({
 });
 
 const uploadToCloudinary = async (req, res, next) => {
+  console.log(req);
   try {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });

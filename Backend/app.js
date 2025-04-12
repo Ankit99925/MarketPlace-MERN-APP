@@ -19,25 +19,33 @@ const corsOptions = {
 const authRouter = require("./Routes/authRouter");
 const sellerRouter = require("./Routes/sellerRouter");
 const customerRouter = require("./Routes/customerRouter");
+const publicRouter = require("./Routes/publicRouter");
 const errorController = require("./Controller/errorController");
-const { isSeller, isLoggedIn, isCustomer } = require("./middlewares/auth");
-const { getProducts } = require("./Controller/customerController");
+const {
+  isSeller,
+  isLoggedIn,
+  isCustomer,
+  isAdmin,
+} = require("./middlewares/auth");
 const { webhook } = require("./Controller/stripeController");
+const adminRouter = require("./Routes/adminRouter");
 
 app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(helmet());
-app.use(rateLimit({
-  windowMs: 5 * 60 * 1000, 
-  limit: 5,
-  message: "Too many requests, please try again  later.",
-  statusCode: 429,
-}));
+// app.use(
+//   rateLimit({
+//     windowMs: 5 * 60 * 1000,
+//     limit: 111,
+//     message: "Too many requests, please try again  later.",
+//     statusCode: 429,
+//   })
+// );
 
 const webhookRouter = express.Router();
-webhookRouter.use(express.raw({ type: 'application/json' }));
-webhookRouter.post('/', webhook);
-app.use('/webhook', webhookRouter);
+webhookRouter.use(express.raw({ type: "application/json" }));
+webhookRouter.post("/", webhook);
+app.use("/webhook", webhookRouter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -46,7 +54,8 @@ app.use(passport.initialize());
 
 connectDB();
 
-app.get("/", getProducts);
+app.use("/api/admin", isLoggedIn, isAdmin, adminRouter);
+app.use("/api/public", publicRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/seller", isLoggedIn, isSeller, sellerRouter);
 app.use("/api/customer", isLoggedIn, isCustomer, customerRouter);

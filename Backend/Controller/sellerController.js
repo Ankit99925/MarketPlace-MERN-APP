@@ -16,15 +16,29 @@ exports.createProduct = async (req, res) => {
     if (!imageUrl) {
       return res.status(400).json({ message: "Image upload failed" });
     }
-    const { productName, brand, price, description, category, rating } =
-      req.body;
+    const {
+      productName,
+      brand,
+      price,
+      description,
+      category,
+      rating,
+      subCategory,
+      stock,
+      isFeatured,
+      tags,
+    } = req.body;
     const product = await Product.create({
       productName,
       brand,
       price,
       description,
+      stock,
+      isFeatured,
+      tags,
       imageUrl,
       category,
+      subCategory,
       rating,
       seller: sellerId,
     });

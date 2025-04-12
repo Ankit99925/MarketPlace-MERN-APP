@@ -5,8 +5,6 @@ import ErrorMessages from "../../ErrorMessages";
 import CartItems from "./CartItem";
 import CartSummary from "./CartSummary";
 
-
-
 const Cart = () => {
   const dispatch = useDispatch();
 
@@ -18,8 +16,8 @@ const Cart = () => {
     dispatch(fetchCustomerData());
   }, [dispatch]);
 
-  const productsInCart = products.filter(
-    (product) => cart.includes(product._id)
+  const productsInCart = [...products].filter((product) =>
+    cart.includes(product._id)
   );
 
   return (

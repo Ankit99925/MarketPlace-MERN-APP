@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 const CartSummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   // Get products from Redux state
   const { products, cart } = useSelector((state) => state.customer);
-  const productsInCart = products.filter(product => cart.includes(product._id));
-  
+  const productsInCart = [...products].filter((product) =>
+    cart.includes(product._id)
+  );
+
   let totalPrice = 0;
   for (const product of productsInCart) {
     totalPrice += product.price;
@@ -20,11 +22,13 @@ const CartSummary = () => {
 
   const handleCheckout = () => {
     // Make sure we're passing both products and finalPrice
-    dispatch(setCheckoutProducts({
-      products: productsInCart,
-      finalPrice: finalPrice // This matches the state property name
-    }));
-    navigate('/checkout');
+    dispatch(
+      setCheckoutProducts({
+        products: productsInCart,
+        finalPrice: finalPrice, // This matches the state property name
+      })
+    );
+    navigate("/checkout");
   };
 
   return (
