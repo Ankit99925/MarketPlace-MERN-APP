@@ -86,6 +86,7 @@ exports.login = async (req, res) => {
       jwtToken,
       userType: user.userType,
       firstName: user.firstName,
+      userId: user._id,
     });
   } catch (err) {
     res.status(400).json({

@@ -1,12 +1,13 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { createProduct } from "../../store/slices/sellerSlice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 const AddProduct = () => {
   const { isLoading } = useSelector((state) => state.seller);
   const navigate = useNavigate();
-  const jwtToken = useSelector((state) => state.auth);
   const [selectedCategory, setSelectedCategory] = useState("Plant");
   const [imagePreview, setImagePreview] = useState(null);
   const dispatch = useDispatch();
@@ -47,9 +48,12 @@ const AddProduct = () => {
       });
 
       await dispatch(createProduct(formData)).unwrap();
+      toast.success("Product created successfully");
+      navigate("/sellerDashboard/products");
     } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to create product");
       setError("root.serverError", {
-        type: "server",
+        type: "manual",
         message: error.message || "Failed to create product",
       });
     }

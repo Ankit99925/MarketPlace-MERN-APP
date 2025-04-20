@@ -10,7 +10,7 @@ const SeedsPage = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   useEffect(() => {
-    dispatch(fetchPublicProducts("Seed"));
+    dispatch(fetchPublicProducts("Seed")).unwrap();
   }, [dispatch]);
 
   if (isLoading) {

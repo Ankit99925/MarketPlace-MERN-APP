@@ -5,8 +5,8 @@ import Signup from "./components/auth/Signup";
 import { BrowserRouter } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import SellerHome from "./components/seller/SellerHome";
-import CustomerHome from "./components/customer/CustomerHome";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Cart from "./components/customer/cart/Cart";
 import Orders from "./components/customer/Orders";
 import EditProduct from "./components/seller/EditProduct";
@@ -26,6 +26,7 @@ import FlowerSeeds from "./components/seeds/FlowerSeeds";
 import HerbSeeds from "./components/seeds/HerbSeeds";
 import VegetableSeeds from "./components/seeds/VegetableSeeds";
 import PlantCare from "./components/plantCare/PlantCare";
+import NotFound from "./components/shared/NotFound";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store/store";
@@ -33,6 +34,12 @@ import PlantLoader from "./components/shared/PlantLoader";
 import { useEffect } from "react";
 import { fetchCustomerData } from "./store/slices/customerSlice";
 import { fetchSellerProducts } from "./store/slices/sellerSlice";
+import SellerDashboard from "./components/seller/sellerDashboard/src/SellerDashboard";
+import CustomerProfile from "./components/customer/CustomerProfile";
+import ModalContainer from "./components/shared/ModalContainer";
+import SearchPage from "./components/shared/SearchResults";
+import Layout from "./components/layout/Layout";
+
 function AppRoutes() {
   const { isAuthenticated, userType } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -51,7 +58,10 @@ function AppRoutes() {
     <>
       <NavBar />
       <Routes>
-        {/* Public Routes - Accessible to Everyone */}
+        {/* Landing page - no filters */}
+        <Route path="/" element={<LandingPage />} />
+
+        {/* Auth routes - no filters */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
@@ -59,40 +69,50 @@ function AppRoutes() {
         <Route path="/verifyOtp" element={<VerifyOtp />} />
         <Route path="/auth/google" element={<GoogleAuth />} />
 
-        {/* Product Category Routes - Public */}
-        <Route path="/plants" element={<PlantsPage />} />
-        <Route path="/plants/indoor" element={<IndoorPlants />} />
-        <Route path="/plants/outdoor" element={<OutdoorPlants />} />
-        <Route path="/plants/hanging" element={<HangingPlants />} />
-        <Route path="/seeds" element={<SeedsPage />} />
-        <Route path="/seeds/flower" element={<FlowerSeeds />} />
-        <Route path="/seeds/herb" element={<HerbSeeds />} />
-        <Route path="/seeds/vegetable" element={<VegetableSeeds />} />
-        <Route path="/plant-care" element={<PlantCare />} />
+        {/* Filterable routes */}
+        <Route element={<Layout />}>
+          <Route path="/search" element={<SearchPage />} />
 
-        {/* Protected Seller Routes */}
+          {/* Product Category Routes */}
+          <Route path="/plants" element={<PlantsPage />} />
+          <Route path="/plants/indoor" element={<IndoorPlants />} />
+          <Route path="/plants/outdoor" element={<OutdoorPlants />} />
+          <Route path="/plants/hanging" element={<HangingPlants />} />
+          <Route path="/seeds" element={<SeedsPage />} />
+          <Route path="/seeds/flower" element={<FlowerSeeds />} />
+          <Route path="/seeds/herb" element={<HerbSeeds />} />
+          <Route path="/seeds/vegetable" element={<VegetableSeeds />} />
+          <Route path="/plant-care" element={<PlantCare />} />
+        </Route>
+
         {isAuthenticated && userType === "Seller" && (
           <>
-            <Route path="/" element={<SellerHome />} />
+            <Route path="/sellerDashboard/*" element={<SellerDashboard />} />
             <Route path="/addProduct" element={<AddProduct />} />
             <Route path="/editProduct/:id" element={<EditProduct />} />
           </>
         )}
-
-        {/* Protected Customer Routes */}
         {isAuthenticated && userType === "Customer" && (
           <>
-            <Route path="/" element={<CustomerHome />} />
-            <Route path="/cart" element={<Cart />} />
+            <Route path="/myProfile" element={<CustomerProfile />} />
             <Route path="/orders" element={<Orders />} />
+          </>
+        )}
+
+        {/* Non-filterable protected routes */}
+        {isAuthenticated && userType === "Customer" && (
+          <>
+            <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/payment-result" element={<PaymentResult />} />
           </>
         )}
 
-        {/* Landing Page - Show when not authenticated */}
-        {!isAuthenticated && <Route path="/" element={<LandingPage />} />}
+        {/* Not Found */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
+      <ToastContainer position="top-center" autoClose={2000} />
+      <ModalContainer />
     </>
   );
 }
@@ -100,13 +120,11 @@ function AppRoutes() {
 // Main App component
 function App() {
   return (
-    <Provider store={store}>
-      <PersistGate loading={<PlantLoader />} persistor={persistor}>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </PersistGate>
-    </Provider>
+    <PersistGate loading={<PlantLoader />} persistor={persistor}>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </PersistGate>
   );
 }
 

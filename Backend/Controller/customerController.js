@@ -1,7 +1,7 @@
 const Product = require("../models/productModel");
 const User = require("../models/userModel");
 const order = require("../models/order");
-
+const filterAndSearchProducts = require("../utility/filterAndSearchProducts");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 exports.getData = async (req, res) => {
@@ -9,14 +9,39 @@ exports.getData = async (req, res) => {
     const userId = req.userId;
     const user = await User.findById(userId).populate("orders");
 
-    const products = await Product.find();
+    let productsData;
+    if (Object.keys(req.query).length > 0) {
+      productsData = await filterAndSearchProducts(req, res); // Will return data
+    } else {
+      const products = await Product.find();
+      productsData = {
+        success: true,
+        data: {
+          products,
+          metadata: {
+            total: products.length,
+            page: 1,
+            limit: products.length,
+            totalPages: 1,
+          },
+        },
+      };
+    }
+
+    // Add user-specific data to the response
     res.status(200).json({
-      products,
-      cart: user.cart,
-      orders: user.orders,
+      success: true,
+      data: {
+        ...productsData.data,
+        cart: user.cart,
+        orders: user.orders,
+      },
     });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+    });
   }
 };
 
@@ -104,19 +129,21 @@ exports.checkPaymentResult = async (req, res) => {
   const { sessionId } = req.params;
   const userId = req.userId;
 
-  console.log("Session ID:", sessionId);
-  console.log("User ID:", userId);
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
-    console.log("Session getting for checking payment result:", session);
     if (session.payment_status === "paid") {
       const user = await User.findById(userId).populate("cart");
       let totalAmount = 0;
       for (const product of user.cart) {
         totalAmount += product.price;
       }
+      const items = user.cart.map((product) => ({
+        product: product._id,
+        quantity: 1,
+        priceAtPurchase: product.price,
+      }));
       const orders = new order({
-        items: user.cart,
+        items: items,
         total: totalAmount,
         status: "pending",
         seller: Product.findById(user.cart).seller,
@@ -133,5 +160,46 @@ exports.checkPaymentResult = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.getCustomerProfile = async (req, res) => {
+  const userId = req.userId;
+  const user = await User.findById(userId);
+  res.status(200).json(user);
+};
+
+exports.updateCustomerProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const imageUrl = req.fileUrl; // Get the uploaded image URL
+    const { firstName, lastName, email } = req.body;
+
+    const updateData = {
+      firstName,
+      lastName,
+      email,
+    };
+
+    // Only update profilePicture if a new image was uploaded
+    if (imageUrl) {
+      updateData.profilePicture = imageUrl;
+    }
+
+    const profile = await User.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true } // Return updated document
+    );
+
+    res.status(200).json({
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      email: profile.email,
+      userType: profile.userType,
+      profilePicture: profile.profilePicture,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

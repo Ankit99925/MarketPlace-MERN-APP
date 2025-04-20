@@ -15,14 +15,6 @@ const Orders = () => {
     dispatch(fetchCustomerData());
   }, [dispatch]);
 
-  // Debug logs
-  console.log("Orders Component State:", {
-    products: products,
-    orders: orders,
-    isLoading: isLoading,
-  });
-
-  console.log("Raw order data:", orders);
 
   if (isLoading) {
     return (

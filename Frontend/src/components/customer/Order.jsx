@@ -1,20 +1,13 @@
 import { useSelector } from "react-redux";
 
 const Order = ({ order, products }) => {
-  // Debug log
-  console.log("Order data:", {
-    orderItems: order?.items,
-    allProducts: products,
-  });
-  console.log("Order items id:", order._id);
-
   if (!order || !order.items || !products) {
     return <div>Loading order details...</div>;
   }
 
   // Find products for each order item
   const productsInOrder = order.items
-    .map((item) => products.find((p) => p._id === item._id))
+    .map((item) => products.find((p) => p._id === item.product))
     .filter(Boolean); // Remove any undefined products
 
   console.log("Found products:", productsInOrder);

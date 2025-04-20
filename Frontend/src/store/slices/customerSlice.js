@@ -13,18 +13,87 @@ const initialState = {
   errorMessages: [],
   checkoutProducts: [],
   finalPrice: 0,
+  profile: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    profilePicture: "",
+    isEmailVerified: false,
+    userType: "",
+    googleId: "",
+  },
 };
+
+export const fetchCustomerProfile = createAsyncThunk(
+  "customer/fetchCustomerProfile",
+  async () => {
+    const token = AuthHelper();
+    const res = await axios.get("http://localhost:3000/api/customer/profile", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (res.status === 200) {
+      return res.data;
+    } else {
+      throw new Error(res.statusText || "Failed to fetch customer profile");
+    }
+  }
+);
+
+export const updateCustomerProfile = createAsyncThunk(
+  "customer/updateCustomerProfile",
+  async ({ userId, formData }) => {
+    const token = AuthHelper();
+    console.log(formData);
+    console.log(userId);
+    try {
+      const res = await axios.patch(
+        `http://localhost:3000/api/customer/profile/${userId}`,
+        formData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          encType: "multipart/form-data",
+        }
+      );
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      throw new Error(
+        error.response.data.message || "Failed to update profile"
+      );
+    }
+  }
+);
 
 export const fetchCustomerData = createAsyncThunk(
   "customer/fetchCustomerData",
-  async () => {
+  async (filters = {}) => {
     const token = AuthHelper();
-    const res = await axios.get("http://localhost:3000/api/customer/data", {
+
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== "") {
+        if (Array.isArray(value) && value.length > 0) {
+          value.forEach((item) => params.append(key, item));
+        } else {
+          params.append(key, value);
+        }
+      }
+    });
+
+    const queryString = params.toString();
+    const url = `http://localhost:3000/api/customer/data${
+      queryString ? `?${queryString}` : ""
+    }`;
+
+    const res = await axios.get(url, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log(res.data);
+
+    console.log("Response:", res.data);
+
     if (res.status === 200) {
-      return res.data;
+      return res.data.data;
     } else {
       throw new Error(res.statusText || "Failed to fetch customer data");
     }
@@ -71,29 +140,6 @@ const customerSlice = createSlice({
   name: "customer",
   initialState: initialState,
   reducers: {
-    sortProducts: (state, action) => {
-      const { sortBy, searchTerm } = action.payload;
-
-      let filteredProducts = state.products;
-
-      if (sortBy && sortBy !== "All") {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.category === sortBy
-        );
-      }
-      if (searchTerm && searchTerm.trim() !== "") {
-        filteredProducts = filteredProducts.filter((product) =>
-          product.productName.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      }
-      state.sortedProducts = filteredProducts;
-
-      if (state.sortedProducts.length === 0) {
-        state.errorMessages = ["No products found"];
-      } else {
-        state.errorMessages = [];
-      }
-    },
     setCheckoutProducts: (state, action) => {
       state.checkoutProducts = action.payload.products;
       state.finalPrice = action.payload.finalPrice;
@@ -105,11 +151,14 @@ const customerSlice = createSlice({
     });
     builder.addCase(fetchCustomerData.fulfilled, (state, action) => {
       state.isLoading = false;
-      const { products, cart, orders } = action.payload;
-      state.products = products;
-      state.cart = cart;
-      state.sortedProducts = products;
-      state.orders = orders;
+      if (action.payload.success) {
+        const { products, metadata, cart, orders } = action.payload.data;
+        state.products = products;
+        state.metadata = metadata;
+        state.cart = cart;
+        state.orders = orders;
+        state.sortedProducts = products;
+      }
     });
     builder.addCase(fetchCustomerData.rejected, (state, action) => {
       state.isLoading = false;
@@ -136,7 +185,29 @@ const customerSlice = createSlice({
       state.isLoading = false;
       state.errorMessages = [action.error.message];
     });
+    builder.addCase(fetchCustomerProfile.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchCustomerProfile.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.profile = action.payload;
+    });
+    builder.addCase(fetchCustomerProfile.rejected, (state, action) => {
+      state.isLoading = false;
+      state.errorMessages = [action.error.message];
+    });
+    builder.addCase(updateCustomerProfile.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(updateCustomerProfile.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.profile = action.payload;
+    });
+    builder.addCase(updateCustomerProfile.rejected, (state, action) => {
+      state.isLoading = false;
+      state.errorMessages = [action.error.message];
+    });
   },
 });
-export const { sortProducts, setCheckoutProducts } = customerSlice.actions;
+export const { setCheckoutProducts } = customerSlice.actions;
 export default customerSlice.reducer;

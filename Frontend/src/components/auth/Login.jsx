@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../store/slices/authSlice";
+import { toast } from "react-toastify";
 const Login = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -23,11 +24,11 @@ const Login = () => {
         { headers: { Authorization: `Bearer ${jwtToken}` } }
       )
       .then((res) => {
-        console.log(res.data);
         dispatch(loginSuccess(res.data));
+        toast.success("Login successful");
         navigate("/");
       })
-      .catch((e) => setErrors(e));
+      .catch((e) => toast.error(e.response.data.message));
   };
 
   const handleGoogleLogin = () => {

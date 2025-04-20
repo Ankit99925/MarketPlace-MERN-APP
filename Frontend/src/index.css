@@ -1,1 +1,26 @@
 @import "tailwindcss";
+
+@layer utilities {
+  .container {
+    @apply px-4 mx-auto;
+    max-width: 100%;
+  }
+
+  @screen sm {
+    .container {
+      max-width: 640px;
+    }
+  }
+
+  @screen md {
+    .container {
+      max-width: 768px;
+    }
+  }
+
+  @screen lg {
+    .container {
+      max-width: 1024px;
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const ForgotPassword = () => {
   const emailRef = useRef();
@@ -22,10 +23,13 @@ const ForgotPassword = () => {
       );
 
       console.log(data);
+      toast.success("Reset instructions sent to your email");
       navigate("/verifyOtp");
     } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to send reset instructions"
+      );
       setErrors([error.message]);
-      console.log(error);
     }
   };
 

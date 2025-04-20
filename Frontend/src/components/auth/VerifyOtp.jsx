@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Cookie from "js-cookie";
 import axios from "axios";
+import { toast } from "react-toastify";
+
 const VerifyOtp = () => {
   const otpRef = useRef();
   const navigate = useNavigate();
@@ -9,11 +10,10 @@ const VerifyOtp = () => {
 
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
-    const cookie = Cookie.get("otpToken");
-    console.log(cookie);
+
     try {
-      const data = await axios.post(
-        "http://localhost:3000/api/auth/verifyOtp",
+      const { data } = await axios.post(
+        "http://localhost:3000/api/auth/verifyotp",
         {
           otp: otpRef.current.value,
         },
@@ -21,13 +21,13 @@ const VerifyOtp = () => {
           withCredentials: true,
         }
       );
+
       console.log(data);
-      if (data.status === 200) {
-        navigate("/resetPassword");
-      }
+      toast.success("OTP verified successfully");
+      navigate("/resetPassword");
     } catch (error) {
+      toast.error(error.response?.data?.message || "Invalid OTP");
       setErrors([error.message]);
-      console.log(error);
     }
   };
 

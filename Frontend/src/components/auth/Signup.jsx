@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 const Signup = () => {
   const firstNameRef = useRef();
@@ -26,11 +27,13 @@ const Signup = () => {
       })
       .then((data) => {
         if (data.status === 201) {
+          toast.success("Account created successfully! Please log in.");
           navigate("/login");
         }
       })
       .catch((err) => {
         if (err.response && err.response.status === 422) {
+          toast.error("Failed to create account");
           setErrors(err.response.data.errors);
         }
       });

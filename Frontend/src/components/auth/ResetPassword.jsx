@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
+
 const ResetPassword = () => {
   const newPasswordRef = useRef();
   const confirmNewPasswordRef = useRef();
@@ -9,8 +11,9 @@ const ResetPassword = () => {
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
+
     try {
-      const data = await axios.post(
+      const { data } = await axios.post(
         "http://localhost:3000/api/auth/resetPassword",
         {
           newPassword: newPasswordRef.current.value,
@@ -18,11 +21,12 @@ const ResetPassword = () => {
         },
         { withCredentials: true }
       );
+
       console.log(data);
-      if (data.status === 200) {
-        navigate("/login");
-      }
+      toast.success("Password reset successful");
+      navigate("/login");
     } catch (error) {
+      toast.error(error.response?.data?.message || "Password reset failed");
       setErrors([error.message]);
     }
   };

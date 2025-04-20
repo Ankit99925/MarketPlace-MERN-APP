@@ -1,6 +1,9 @@
 const Product = require("../models/productModel");
-
+const filterAndSearchProducts = require("../utility/filterAndSearchProducts");
 exports.getAllData = async (req, res) => {
+  if (Object.keys(req.query).length > 0) {
+    return filterAndSearchProducts(req, res);
+  }
   try {
     const products = await Product.find();
     res.status(200).json({ products });

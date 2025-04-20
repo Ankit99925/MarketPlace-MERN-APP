@@ -3,7 +3,9 @@ import ProductCard from "../shared/ProductCard";
 import { useSelector } from "react-redux";
 
 const NewArrivals = () => {
-  const { seeds } = useSelector((state) => state.public);
+  const { products } = useSelector((state) => state.public);
+
+  console.log(products);
 
   return (
     <>
@@ -14,10 +16,12 @@ const NewArrivals = () => {
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-        {seeds &&
-          seeds
+        {products &&
+          products
             .slice(0, 4)
-            .map((seed) => <ProductCard key={seed._id} product={seed} />)}
+            .map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
       </div>
     </>
   );

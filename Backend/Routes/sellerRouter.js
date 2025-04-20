@@ -28,4 +28,20 @@ sellerRouter.delete(
   sellerController.deleteProduct
 );
 
+sellerRouter.get("/orders", sellerController.getSellerOrders);
+
+sellerRouter.patch(
+  "/updateOrderStatus/:id",
+  sellerController.updateOrderStatus
+);
+
+sellerRouter.get("/profile/:id", sellerController.getSellerProfile);
+
+sellerRouter.patch(
+  "/updateProfile/:id",
+  upload.single("profilePicture"),
+  editUpdateToCloudinary,
+  sellerController.updateSellerProfile
+);
+
 module.exports = sellerRouter;
