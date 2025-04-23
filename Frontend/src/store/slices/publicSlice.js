@@ -7,7 +7,7 @@ const initialState = {
   metadata: {
     total: 0,
     page: 1,
-    limit: 10,
+    limit: 9,
     totalPages: 0,
   },
   filters: {
@@ -25,7 +25,7 @@ const initialState = {
     sortBy: "createdAt",
     sortOrder: "desc",
     page: 1,
-    limit: 10,
+    limit: 9,
   },
   isLoading: false,
   error: null,
@@ -33,11 +33,8 @@ const initialState = {
 
 export const fetchPublicProducts = createAsyncThunk(
   "public/fetchPublicProducts",
-  async (category) => {
-    const response = await axios.get(
-      `http://localhost:3000/api/public/${category}`
-    );
-
+  async () => {
+    const response = await axios.get("http://localhost:3000/api/public");
     return response.data;
   }
 );
@@ -61,7 +58,6 @@ export const fetchFilteredProducts = createAsyncThunk(
     const response = await axios.get(
       `http://localhost:3000/api/public?${params}`
     );
-    console.log(response.data);
     return response.data;
   }
 );
@@ -108,12 +104,10 @@ const publicSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(fetchFilteredProducts.pending, (state) => {
-        console.log("Loading products..."); // Debug log
         state.isLoading = true;
         state.error = null;
       })
       .addCase(fetchFilteredProducts.fulfilled, (state, action) => {
-        console.log("Products loaded:", action.payload); // Debug log
         state.isLoading = false;
         state.filteredProducts = action.payload.data.products || [];
         state.metadata = action.payload.data.metadata || {
@@ -129,7 +123,6 @@ const publicSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchFilteredProducts.rejected, (state, action) => {
-        console.error("Failed to load products:", action.error); // Debug log
         state.isLoading = false;
         state.error = action.error.message;
         state.filteredProducts = [];

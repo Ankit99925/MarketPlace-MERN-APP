@@ -6,8 +6,6 @@ const ProductGrid = ({
   isLoading,
   emptyMessage = "No products found",
 }) => {
-  console.log("ProductGrid received:", { products, isLoading }); // Debug log
-
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   if (isLoading) {

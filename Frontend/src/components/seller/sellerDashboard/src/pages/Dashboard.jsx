@@ -1,24 +1,10 @@
 import React, { useState } from "react";
-
 import Sidebar from "../partials/Sidebar";
-import FilterButton from "../components/DropdownFilter";
-import Datepicker from "../components/Datepicker";
-import DashboardCard01 from "../partials/dashboard/DashboardCard01";
-import DashboardCard02 from "../partials/dashboard/DashboardCard02";
-import DashboardCard03 from "../partials/dashboard/DashboardCard03";
-import DashboardCard04 from "../partials/dashboard/DashboardCard04";
-import DashboardCard05 from "../partials/dashboard/DashboardCard05";
-import DashboardCard06 from "../partials/dashboard/DashboardCard06";
-import DashboardCard07 from "../partials/dashboard/DashboardCard07";
-import DashboardCard08 from "../partials/dashboard/DashboardCard08";
-import DashboardCard09 from "../partials/dashboard/DashboardCard09";
-import DashboardCard10 from "../partials/dashboard/DashboardCard10";
-import DashboardCard11 from "../partials/dashboard/DashboardCard11";
-import DashboardCard12 from "../partials/dashboard/DashboardCard12";
-import DashboardCard13 from "../partials/dashboard/DashboardCard13";
+import { useSelector } from "react-redux";
 
 function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { products, orders } = useSelector((state) => state.seller);
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -27,68 +13,113 @@ function Dashboard() {
 
       {/* Content area */}
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-        
-
         <main className="grow">
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-            {/* Dashboard actions */}
+            {/* Dashboard header */}
             <div className="sm:flex sm:justify-between sm:items-center mb-8">
-              {/* Left: Title */}
               <div className="mb-4 sm:mb-0">
                 <h1 className="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">
-                  Dashboard
+                  Seller Dashboard
                 </h1>
-              </div>
-
-              {/* Right: Actions */}
-              <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-                {/* Filter button */}
-                <FilterButton align="right" />
-                {/* Datepicker built with React Day Picker */}
-                <Datepicker align="right" />
-                {/* Add view button */}
-                <button className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">
-                  <svg
-                    className="fill-current shrink-0 xs:hidden"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
-                  </svg>
-                  <span className="max-xs:sr-only">Add View</span>
-                </button>
               </div>
             </div>
 
-            {/* Cards */}
-            <div className="grid grid-cols-12 gap-6">
-              {/* Line chart (Acme Plus) */}
-              <DashboardCard01 />
-              {/* Line chart (Acme Advanced) */}
-              <DashboardCard02 />
-              {/* Line chart (Acme Professional) */}
-              <DashboardCard03 />
-              {/* Bar chart (Direct vs Indirect) */}
-              <DashboardCard04 />
-              {/* Line chart (Real Time Value) */}
-              <DashboardCard05 />
-              {/* Doughnut chart (Top Countries) */}
-              <DashboardCard06 />
-              {/* Table (Top Channels) */}
-              <DashboardCard07 />
-              {/* Line chart (Sales Over Time) */}
-              <DashboardCard08 />
-              {/* Stacked bar chart (Sales VS Refunds) */}
-              <DashboardCard09 />
-              {/* Card (Customers) */}
-              <DashboardCard10 />
-              {/* Card (Reasons for Refunds) */}
-              <DashboardCard11 />
-              {/* Card (Recent Activity) */}
-              <DashboardCard12 />
-              {/* Card (Income/Expenses) */}
-              <DashboardCard13 />
+            {/* Dashboard Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {/* Total Products */}
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+                <h3 className="text-gray-600 dark:text-gray-400 text-sm font-medium">
+                  Total Products
+                </h3>
+                <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">
+                  {products?.length || 0}
+                </p>
+              </div>
+
+              {/* Total Orders */}
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+                <h3 className="text-gray-600 dark:text-gray-400 text-sm font-medium">
+                  Total Orders
+                </h3>
+                <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">
+                  {orders?.length || 0}
+                </p>
+              </div>
+
+              {/* Revenue */}
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+                <h3 className="text-gray-600 dark:text-gray-400 text-sm font-medium">
+                  Total Revenue
+                </h3>
+                <p className="text-3xl font-bold text-green-600">
+                  $
+                  {orders
+                    ?.reduce((acc, order) => acc + order.totalAmount, 0)
+                    .toFixed(2) || "0.00"}
+                </p>
+              </div>
+
+              {/* Active Products */}
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+                <h3 className="text-gray-600 dark:text-gray-400 text-sm font-medium">
+                  Active Products
+                </h3>
+                <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">
+                  {products?.filter((product) => product.stock > 0).length || 0}
+                </p>
+              </div>
+            </div>
+
+            {/* Recent Orders */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm mb-8">
+              <div className="p-6">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+                  Recent Orders
+                </h2>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="text-left text-gray-500 dark:text-gray-400">
+                        <th className="pb-4">Order ID</th>
+                        <th className="pb-4">Product</th>
+                        <th className="pb-4">Date</th>
+                        <th className="pb-4">Amount</th>
+                        <th className="pb-4">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {orders?.slice(0, 5).map((order) => (
+                        <tr
+                          key={order._id}
+                          className="border-t border-gray-200 dark:border-gray-700"
+                        >
+                          <td className="py-4">{order._id}</td>
+                          <td className="py-4">
+                            {order.items[0]?.productName}
+                          </td>
+                          <td className="py-4">
+                            {new Date(order.createdAt).toLocaleDateString()}
+                          </td>
+                          <td className="py-4">${order.totalAmount}</td>
+                          <td className="py-4">
+                            <span
+                              className={`px-3 py-1 rounded-full text-sm ${
+                                order.status === "Delivered"
+                                  ? "bg-green-100 text-green-800"
+                                  : order.status === "Processing"
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-gray-100 text-gray-800"
+                              }`}
+                            >
+                              {order.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </main>

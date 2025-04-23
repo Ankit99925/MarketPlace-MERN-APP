@@ -48,13 +48,11 @@ exports.getData = async (req, res) => {
 exports.addToCart = async (req, res) => {
   const { id } = req.params;
   const userId = req.userId;
-  console.log("User ID:", userId);
   try {
     if (!id) {
       return res.status(404).json({ error: "Product not found" });
     }
     const user = await User.findById(userId);
-    console.log("User:", user);
     user.cart.push(id);
 
     await user.save();
@@ -73,7 +71,6 @@ exports.removeFromCart = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
     const user = await User.findById(userId);
-    console.log(user.cart);
 
     user.cart = user.cart.filter((itemid) => itemid.toString() !== id);
 
@@ -87,7 +84,6 @@ exports.removeFromCart = async (req, res) => {
 
 exports.createCheckoutSession = async (req, res) => {
   const { products, finalPrice } = req.body;
-  console.log("products", products);
   const subtotal = products.reduce((sum, product) => sum + product.price, 0);
 
   const session = await stripe.checkout.sessions.create({
@@ -155,7 +151,6 @@ exports.checkPaymentResult = async (req, res) => {
       user.orders.push(orders._id);
       user.cart = [];
       await user.save();
-      console.log("Order created:", orders);
       res.status(200).json(orders);
     }
   } catch (error) {

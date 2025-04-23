@@ -22,7 +22,6 @@ const ForgotPassword = () => {
         }
       );
 
-      console.log(data);
       toast.success("Reset instructions sent to your email");
       navigate("/verifyOtp");
     } catch (error) {

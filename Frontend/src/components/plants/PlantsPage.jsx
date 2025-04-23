@@ -14,10 +14,12 @@ const PlantsPage = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   useEffect(() => {
-    // Reset filters before setting new ones
+    // Reset filters first
     dispatch(resetFilters());
-
-    dispatch(fetchFilteredProducts("Plant")).unwrap();
+    // Set the category filter
+    dispatch(setFilters({ category: "Plant" }));
+    // Then fetch the filtered products
+    dispatch(fetchFilteredProducts());
   }, [dispatch]);
 
   if (isLoading) {

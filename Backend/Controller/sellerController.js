@@ -5,13 +5,11 @@ exports.getProducts = async (req, res) => {
   // const { name, brand, price, description, category, rating,imageUrl } = req.body;
 
   const product = await Product.find().populate("seller", "firstName");
-  console.log(product);
   res.status(200).json({ product });
 };
 
 exports.getSellerOrders = async (req, res) => {
   try {
-    console.log("getSellerOrders");
     const sellerId = req.userId;
 
     const orders = await Order.find()
@@ -33,7 +31,6 @@ exports.getSellerOrders = async (req, res) => {
 
     res.status(200).json({ orders: sellerOrders });
   } catch (error) {
-    console.error("Error in getSellerOrders:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -41,7 +38,6 @@ exports.getSellerOrders = async (req, res) => {
 exports.updateOrderStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
-  console.log("orderId", id);
   const order = await Order.findById(id);
   if (!order) {
     return res.status(404).json({ message: "Order not found" });
@@ -93,14 +89,11 @@ exports.createProduct = async (req, res) => {
 
 exports.editProduct = async (req, res) => {
   const { id } = req.params;
-  console.log("Edit product ID:", id);
-  console.log("Request body:", req.body);
 
   let newImageUrl;
   // Handle file upload
   if (req.file) {
     newImageUrl = req.fileUrl;
-    console.log("New image URL:", newImageUrl);
   }
 
   // Destructure required fields from req.body
@@ -150,22 +143,17 @@ exports.editProduct = async (req, res) => {
       tags: parsedTags,
     };
 
-    console.log("Updating product with data:", updateData);
-
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       updateData,
       { new: true } // Return the updated document
     );
 
-    console.log("Updated product:", updatedProduct);
-
     res.status(201).json({
       product: updatedProduct,
       message: "Product updated Successfully",
     });
   } catch (e) {
-    console.error("Error updating product:", e);
     res.status(500).json({ message: e.message });
   }
 };
@@ -209,7 +197,6 @@ exports.getSellerProfile = async (req, res) => {
       profilePicture: profile.profilePicture,
     });
   } catch (error) {
-    console.error("Error in getSellerProfile:", error);
     res.status(500).json({
       success: false,
       message: "Server error while fetching profile",

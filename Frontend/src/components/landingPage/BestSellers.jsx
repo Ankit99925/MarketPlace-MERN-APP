@@ -1,11 +1,12 @@
 import SectionHeader from "./SectionHeader";
 import ProductCard from "../shared/ProductCard";
-import { useSelector } from "react-redux";
-
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { fetchPublicProducts } from "../../store/slices/publicSlice";
 const BestSellers = () => {
   const { products } = useSelector((state) => state.public);
+
   const bestSellers = products.filter((product) => product.isFeatured);
-  console.log(bestSellers);
   return (
     <>
       <SectionHeader title="Best Sellers" subtitle="Our customers' favorites" />

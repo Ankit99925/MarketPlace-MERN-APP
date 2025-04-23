@@ -37,11 +37,7 @@ const Signup = () => {
           setErrors(err.response.data.errors);
         }
       });
-    // if (data.status === 201) {
-    //   navigate("/login");
-    // } else {
-    //   console.log(data.errors);
-    // }
+    
   };
 
   return (

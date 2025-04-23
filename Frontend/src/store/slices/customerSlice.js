@@ -90,10 +90,8 @@ export const fetchCustomerData = createAsyncThunk(
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    console.log("Response:", res.data);
-
     if (res.status === 200) {
-      return res.data.data;
+      return res.data;
     } else {
       throw new Error(res.statusText || "Failed to fetch customer data");
     }
@@ -104,10 +102,18 @@ export const addProductToCart = createAsyncThunk(
   "customer/addProductToCart",
   async (productId) => {
     const token = AuthHelper();
+    if (!token) {
+      throw new Error("Not authenticated");
+    }
     const res = await axios.post(
       `http://localhost:3000/api/customer/addToCart/${productId}`,
       {},
-      { headers: { Authorization: `Bearer ${token}` } }
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
     );
     return res.data;
   }
@@ -121,18 +127,6 @@ export const removeProductFromCart = createAsyncThunk(
       { headers: { Authorization: `Bearer ${token}` } }
     );
     return res.data;
-  }
-);
-
-export const fetchPublicProducts = createAsyncThunk(
-  "customer/fetchPublicProducts",
-  async () => {
-    const res = await axios("http://localhost:3000/");
-    if (res.status === 200) {
-      return res.data;
-    } else {
-      throw new Error(res.statusText || "Failed to fetch products");
-    }
   }
 );
 
@@ -151,8 +145,12 @@ const customerSlice = createSlice({
     });
     builder.addCase(fetchCustomerData.fulfilled, (state, action) => {
       state.isLoading = false;
+      console.log("action.payload", action.payload);
+      console.log("action.payload.data", action.payload.cart);
+      console.log("action.payload.success", action.payload.success);
       if (action.payload.success) {
         const { products, metadata, cart, orders } = action.payload.data;
+        console.log("cart", cart);
         state.products = products;
         state.metadata = metadata;
         state.cart = cart;
@@ -166,6 +164,7 @@ const customerSlice = createSlice({
     });
 
     builder.addCase(addProductToCart.fulfilled, (state, action) => {
+      console.log("Added to cart:", action.payload);
       state.cart = action.payload;
     });
 
@@ -173,18 +172,6 @@ const customerSlice = createSlice({
       state.cart = action.payload;
     });
 
-    builder.addCase(fetchPublicProducts.pending, (state) => {
-      state.isLoading = true;
-    });
-    builder.addCase(fetchPublicProducts.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.products = action.payload.products;
-      state.sortedProducts = action.payload.products;
-    });
-    builder.addCase(fetchPublicProducts.rejected, (state, action) => {
-      state.isLoading = false;
-      state.errorMessages = [action.error.message];
-    });
     builder.addCase(fetchCustomerProfile.pending, (state) => {
       state.isLoading = true;
     });

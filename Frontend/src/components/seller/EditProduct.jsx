@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchSellerProducts } from "../../store/slices/sellerSlice";
 import { modalService, modalConfigs } from "../../utils/modalService";
+import PlantLoader from "../shared/PlantLoader";
 
 const EditProduct = () => {
   const { isLoading, products } = useSelector((state) => state.seller);
@@ -55,13 +56,14 @@ const EditProduct = () => {
   }, [dispatch, products]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <PlantLoader />;
   }
 
   const categoryMap = {
     Plant: ["Indoor", "Outdoor", "Hanging"],
     Seed: ["Flower Seeds", "Vegetable Seeds", "Herbs"],
-    "Plant Care": ["Fertilizers", "Pots", "Tools", "Accessories"],
+    "Plant Care": ["Fertilizers", "Tools", "Accessories"],
+    Pots: ["Planters", "Pots", "Accessories"],
   };
 
   const onSubmit = async (data) => {

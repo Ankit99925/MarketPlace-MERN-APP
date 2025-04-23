@@ -24,3 +24,48 @@
     }
   }
 }
+
+/* Base styles for light/dark mode */
+:root {
+  /* Light theme variables */
+  --background: #ffffff;
+  --text: #000000;
+  --primary: #6366f1;
+  --secondary: #4f46e5;
+  --accent: #818cf8;
+  --surface: #f3f4f6;
+  --error: #ef4444;
+  --success: #22c55e;
+  --border: #e5e7eb;
+}
+
+[class="dark"] {
+  /* Dark theme variables */
+  --background: #1a1a1a;
+  --text: #ffffff;
+  --primary: #818cf8;
+  --secondary: #6366f1;
+  --accent: #4f46e5;
+  --surface: #27272a;
+  --error: #f87171;
+  --success: #4ade80;
+  --border: #374151;
+}
+
+body {
+  @apply bg-[var(--background)] text-[var(--text)] transition-colors duration-200;
+}
+
+/* Common component styles */
+.card {
+  @apply bg-[var(--surface)] border-[var(--border)] rounded-lg shadow-sm;
+}
+
+.button-primary {
+  @apply bg-[var(--primary)] text-white hover:bg-[var(--secondary)] transition-colors;
+}
+
+.input-field {
+  @apply bg-[var(--surface)] border-[var(--border)] text-[var(--text)] 
+         focus:border-[var(--primary)] focus:ring-[var(--primary)];
+}

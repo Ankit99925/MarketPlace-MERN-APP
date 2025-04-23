@@ -7,7 +7,7 @@ const CustomerHome = () => {
   const dispatch = useDispatch();
   const { userType, isAuthenticated } = useSelector((state) => state.auth);
   const { cart, isLoading, filteredProducts } = useSelector(
-    (state) => state.public
+    (state) => state.customer
   );
 
   useEffect(() => {
@@ -20,6 +20,7 @@ const CustomerHome = () => {
     <ProductGrid
       products={filteredProducts || []}
       isLoading={isLoading}
+      cart={cart}
       emptyMessage="No products available"
     />
   );

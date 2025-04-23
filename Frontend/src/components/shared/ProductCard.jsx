@@ -8,21 +8,34 @@ import {
 import { FaTrash, FaEdit, FaEye } from "react-icons/fa"; // Import icons
 import QuickViewProductCard from "./QuickViewProductCard";
 import { modalService, modalConfigs } from "../../utils/modalService";
+import { toast } from "react-toastify";
 
 const ProductCard = ({ product, isAuthenticated }) => {
   const { userType } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.customer.cart);
+
   const isInCart = cart.includes(product._id); // Use cart prop to check if product is in cart
   const [showQuickView, setShowQuickView] = useState(false);
 
   const handleAddToCart = async (productId) => {
-    dispatch(addProductToCart(productId));
+    try {
+      await dispatch(addProductToCart(productId)).unwrap();
+      toast.success("Product added to cart");
+    } catch (error) {
+      console.error("Failed to add to cart:", error);
+      toast.error("Failed to add product to cart");
+    }
   };
 
   const handleRemoveFromCart = async (productId) => {
-    dispatch(removeProductFromCart(productId));
-    model;
+    try {
+      await dispatch(removeProductFromCart(productId)).unwrap();
+      toast.success("Product removed from cart");
+    } catch (error) {
+      console.error("Failed to remove from cart:", error);
+      toast.error("Failed to remove product from cart");
+    }
   };
 
   const handleDeleteProduct = async (productId) => {

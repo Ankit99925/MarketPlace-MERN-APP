@@ -3,7 +3,8 @@ import ProductCard from "../shared/ProductCard";
 import { useSelector } from "react-redux";
 
 const PlantCareSection = () => {
-  const { plantCare } = useSelector((state) => state.public);
+  const { products } = useSelector((state) => state.public);
+
   return (
     <>
       <SectionHeader
@@ -12,8 +13,9 @@ const PlantCareSection = () => {
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-        {plantCare &&
-          plantCare
+        {products &&
+          products
+            .filter((product) => product.category === "Plant Care")
             .slice(0, 4)
             .map((item) => <ProductCard key={item._id} product={item} />)}
       </div>

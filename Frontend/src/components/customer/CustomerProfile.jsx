@@ -48,8 +48,6 @@ function CustomerProfile() {
       setIsSubmitting(true);
       const formData = new FormData();
 
-      console.log("Raw form data:", data);
-
       // Add text fields
       formData.append("firstName", data.firstName);
       formData.append("lastName", data.lastName);
@@ -57,21 +55,7 @@ function CustomerProfile() {
 
       // Use the selectedFile state instead of data.profilePicture
       if (selectedFile) {
-        console.log("File being appended:", selectedFile);
         formData.append("profilePicture", selectedFile);
-      }
-
-      // Debug: Log all FormData entries
-      console.log("FormData contents:");
-      for (let pair of formData.entries()) {
-        console.log(pair[0], ":", pair[1]);
-        if (pair[1] instanceof File) {
-          console.log("File details:", {
-            name: pair[1].name,
-            type: pair[1].type,
-            size: pair[1].size,
-          });
-        }
       }
 
       const result = await dispatch(
@@ -85,7 +69,6 @@ function CustomerProfile() {
         toast.success("Profile updated successfully");
       }
     } catch (error) {
-      console.error("Failed to update profile:", error);
       toast.error(error.response?.data?.message || "Failed to update profile");
     } finally {
       setIsSubmitting(false);

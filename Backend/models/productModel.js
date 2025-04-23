@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ["Plant", "Seed", "Plant Care"],
+    enum: ["Plant", "Seed", "Plant Care", "Pots"],
   },
   subCategory: {
     type: String,

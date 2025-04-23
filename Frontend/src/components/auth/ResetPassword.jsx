@@ -22,7 +22,6 @@ const ResetPassword = () => {
         { withCredentials: true }
       );
 
-      console.log(data);
       toast.success("Password reset successful");
       navigate("/login");
     } catch (error) {

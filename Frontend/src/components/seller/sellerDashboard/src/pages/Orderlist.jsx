@@ -16,6 +16,8 @@ function OrderList() {
   );
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [expandedOrderId, setExpandedOrderId] = useState(null);
+
   const dispatch = useDispatch();
   const statusRef = useRef(null);
 
@@ -29,7 +31,14 @@ function OrderList() {
       toast.success("Order status updated successfully");
     } catch (error) {
       toast.error("Failed to update order status");
-      console.error("Failed to update status");
+    }
+  };
+
+  const toggleOrderDetails = (orderId) => {
+    if (expandedOrderId === orderId) {
+      setExpandedOrderId(null);
+    } else {
+      setExpandedOrderId(orderId);
     }
   };
 
@@ -125,113 +134,141 @@ function OrderList() {
                     </thead>
                     <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                       {orders.map((order) => (
-                        <tr
-                          key={order._id}
-                          className="hover:bg-gray-50 dark:hover:bg-gray-700"
-                        >
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                            #{order._id.substring(0, 8)}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                            {order.customer
-                              ? order.customer.firstName +
-                                " " +
-                                order.customer.lastName
-                              : "Unknown"}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                            {new Date(order.createdAt).toLocaleDateString()}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                            ${order.total}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                              ${
-                                order.status === "delivered"
-                                  ? "bg-green-100 text-green-800"
-                                  : order.status === "shipped"
-                                  ? "bg-blue-100 text-blue-800"
-                                  : order.status === "cancelled"
-                                  ? "bg-red-100 text-red-800"
-                                  : "bg-yellow-100 text-yellow-800"
-                              }`}
-                            >
-                              {order.status.charAt(0).toUpperCase() +
-                                order.status.slice(1)}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div className="flex flex-col md:flex-row items-center justify-end gap-2 min-w-[200px]">
-                              <div className="relative w-full md:w-40">
-                                <select
-                                  name="orderStatus"
-                                  id={`status-${order._id}`}
-                                  className="appearance-none w-full md:w-40 px-4 py-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all duration-200"
-                                  defaultValue={order.status}
-                                  disabled={updatingOrderId === order._id}
-                                >
-                                  <option value="pending">Pending</option>
-                                  <option value="shipped">Shipped</option>
-                                  <option value="delivered">Delivered</option>
-                                  <option value="cancelled">Cancelled</option>
-                                </select>
-                              </div>
-                              <button
-                                onClick={() =>
-                                  handleUpdateStatus(
-                                    order._id,
-                                    document.getElementById(
-                                      `status-${order._id}`
-                                    ).value
-                                  )
-                                }
-                                disabled={updatingOrderId === order._id}
-                                className="w-full md:w-24 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors duration-200 shadow-sm"
+                        <React.Fragment key={order._id}>
+                          <tr className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                              #{order._id.substring(0, 8)}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                              {order.customer
+                                ? order.customer.firstName +
+                                  " " +
+                                  order.customer.lastName
+                                : "Unknown"}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                              {new Date(order.createdAt).toLocaleDateString()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                              ${order.total}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span
+                                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                ${
+                                  order.status === "delivered"
+                                    ? "bg-green-100 text-green-800"
+                                    : order.status === "shipped"
+                                    ? "bg-blue-100 text-blue-800"
+                                    : order.status === "cancelled"
+                                    ? "bg-red-100 text-red-800"
+                                    : "bg-yellow-100 text-yellow-800"
+                                }`}
                               >
-                                {updatingOrderId === order._id ? (
-                                  <span className="flex items-center gap-2">
-                                    <svg
-                                      className="animate-spin h-4 w-4"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <circle
-                                        className="opacity-25"
-                                        cx="12"
-                                        cy="12"
-                                        r="10"
-                                        stroke="currentColor"
-                                        strokeWidth="4"
-                                        fill="none"
-                                      />
-                                      <path
-                                        className="opacity-75"
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                      />
-                                    </svg>
-                                    Updating...
-                                  </span>
-                                ) : (
-                                  "Update"
-                                )}
-                              </button>
-                              <button
-                                onClick={() => {
-                                  document
-                                    .getElementById(
-                                      `order-details-${order._id}`
+                                {order.status.charAt(0).toUpperCase() +
+                                  order.status.slice(1)}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex flex-col md:flex-row items-center justify-end gap-2 min-w-[200px]">
+                                <div className="relative w-full md:w-40">
+                                  <select
+                                    name="orderStatus"
+                                    id={`status-${order._id}`}
+                                    className="appearance-none w-full md:w-40 px-4 py-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all duration-200"
+                                    defaultValue={order.status}
+                                    disabled={updatingOrderId === order._id}
+                                  >
+                                    <option value="pending">Pending</option>
+                                    <option value="shipped">Shipped</option>
+                                    <option value="delivered">Delivered</option>
+                                    <option value="cancelled">Cancelled</option>
+                                  </select>
+                                </div>
+                                <button
+                                  onClick={() =>
+                                    handleUpdateStatus(
+                                      order._id,
+                                      document.getElementById(
+                                        `status-${order._id}`
+                                      ).value
                                     )
-                                    .classList.remove("hidden");
-                                }}
-                                className="w-full md:w-24 px-3 py-1.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-md text-sm font-medium transition-colors duration-200 shadow-sm"
+                                  }
+                                  disabled={updatingOrderId === order._id}
+                                  className="w-full md:w-24 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors duration-200 shadow-sm"
+                                >
+                                  {updatingOrderId === order._id ? (
+                                    <span className="flex items-center gap-2">
+                                      <svg
+                                        className="animate-spin h-4 w-4"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <circle
+                                          className="opacity-25"
+                                          cx="12"
+                                          cy="12"
+                                          r="10"
+                                          stroke="currentColor"
+                                          strokeWidth="4"
+                                          fill="none"
+                                        />
+                                        <path
+                                          className="opacity-75"
+                                          fill="currentColor"
+                                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                        />
+                                      </svg>
+                                      Updating...
+                                    </span>
+                                  ) : (
+                                    "Update"
+                                  )}
+                                </button>
+                                <button
+                                  onClick={() => toggleOrderDetails(order._id)}
+                                  className="w-full md:w-24 px-3 py-1.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-md text-sm font-medium transition-colors duration-200 shadow-sm"
+                                >
+                                  {expandedOrderId === order._id
+                                    ? "Hide Details"
+                                    : "View Details"}
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                          {expandedOrderId === order._id && (
+                            <tr>
+                              <td
+                                colSpan="6"
+                                className="px-6 py-4 bg-gray-50 dark:bg-gray-700"
                               >
-                                View Details
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
+                                <div className="space-y-4">
+                                  <div>
+                                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                                      Order Details
+                                    </h3>
+                                    <p className="text-gray-600 dark:text-gray-300">
+                                      Order ID: #{order._id}
+                                      <br />
+                                      Date:{" "}
+                                      {new Date(
+                                        order.createdAt
+                                      ).toLocaleDateString()}
+                                      <br />
+                                      Customer:{" "}
+                                      {order.customer
+                                        ? `${order.customer.firstName} ${order.customer.lastName}`
+                                        : "Unknown"}
+                                      <br />
+                                      Total: ${order.total}
+                                      <br />
+                                      Status: {order.status}
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
                       ))}
                     </tbody>
                   </table>

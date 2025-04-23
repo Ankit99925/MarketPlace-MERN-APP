@@ -12,7 +12,6 @@ const PaymentResult = () => {
 
   useEffect(() => {
     const sessionId = new URLSearchParams(location.search).get("status");
-    console.log("Session ID:", sessionId);
 
     if (!sessionId) {
       navigate("/cart");
@@ -21,11 +20,9 @@ const PaymentResult = () => {
 
     const checkStatus = async () => {
       try {
-        console.log("Checking payment status...");
         const token = localStorage.getItem("jwtToken");
 
         if (!token) {
-          console.error("No authentication token found");
           setStatus("error");
           setTimeout(() => {
             navigate("/cart");
@@ -42,7 +39,6 @@ const PaymentResult = () => {
             },
           }
         );
-        console.log("Payment response:", response.data);
 
         if (response.data.paymentDetails === "paid") {
           setStatus("success");
@@ -57,7 +53,6 @@ const PaymentResult = () => {
           }, 2000);
         }
       } catch (error) {
-        console.error("Error:", error);
         setStatus("error");
         setTimeout(() => {
           navigate("/cart");

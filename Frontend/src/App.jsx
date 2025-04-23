@@ -38,6 +38,7 @@ import SellerDashboard from "./components/seller/sellerDashboard/src/SellerDashb
 import CustomerProfile from "./components/customer/CustomerProfile";
 import ModalContainer from "./components/shared/ModalContainer";
 import SearchPage from "./components/shared/SearchResults";
+import PotsAndPlanter from "./components/potandplanter/PotsAndPlanter";
 import Layout from "./components/layout/Layout";
 
 function AppRoutes() {
@@ -83,6 +84,7 @@ function AppRoutes() {
           <Route path="/seeds/herb" element={<HerbSeeds />} />
           <Route path="/seeds/vegetable" element={<VegetableSeeds />} />
           <Route path="/plant-care" element={<PlantCare />} />
+          <Route path="/pots-planters" element={<PotsAndPlanter />} />
         </Route>
 
         {isAuthenticated && userType === "Seller" && (
@@ -117,14 +119,31 @@ function AppRoutes() {
   );
 }
 
-// Main App component
+function AppThemeProvider({ children }) {
+  const theme = useSelector((state) => state.theme.theme);
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
+
+  return children;
+}
+
 function App() {
   return (
-    <PersistGate loading={<PlantLoader />} persistor={persistor}>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-    </PersistGate>
+    <Provider store={store}>
+      <PersistGate loading={<PlantLoader />} persistor={persistor}>
+        <BrowserRouter>
+          <AppThemeProvider>
+            <AppRoutes />
+          </AppThemeProvider>
+        </BrowserRouter>
+      </PersistGate>
+    </Provider>
   );
 }
 

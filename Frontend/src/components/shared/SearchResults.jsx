@@ -24,25 +24,15 @@ const SearchResults = () => {
   );
 
   useEffect(() => {
-    console.log("SearchResults mounted, query:", searchQuery);
-    console.log("Current filteredProducts:", filteredProducts);
     dispatch(fetchFilteredProducts());
   }, [dispatch]);
 
   useEffect(() => {
     if (searchQuery) {
-      console.log("Search query changed:", searchQuery);
       dispatch(setFilters({ search: searchQuery }));
       dispatch(fetchFilteredProducts());
     }
   }, [searchQuery, dispatch]);
-
-  console.log("Rendering SearchResults with:", {
-    filteredProducts,
-    isLoading,
-    error,
-    metadata,
-  });
 
   const handlePageChange = (newPage) => {
     dispatch(setFilters({ page: newPage }));

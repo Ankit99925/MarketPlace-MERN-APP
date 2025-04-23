@@ -33,14 +33,14 @@ const adminRouter = require("./Routes/adminRouter");
 app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(helmet());
-// app.use(
-//   rateLimit({
-//     windowMs: 5 * 60 * 1000,
-//     limit: 111,
-//     message: "Too many requests, please try again  later.",
-//     statusCode: 429,
-//   })
-// );
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 100,
+    message: "Too many requests, please try again  later.",
+    statusCode: 429,
+  })
+);
 
 const webhookRouter = express.Router();
 webhookRouter.use(express.raw({ type: "application/json" }));

@@ -82,7 +82,6 @@ const NavBar = () => {
 
   const handleSearchInput = (e) => {
     const search = e.target.value;
-    console.log("Search input:", search); // Debug log
     debouncedSearch(search);
   };
   useEffect(() => {
@@ -100,7 +99,7 @@ const NavBar = () => {
               <Link to="/" className="flex items-center space-x-2">
                 <img
                   className="h-8 w-8 rounded-full"
-                  src="/logo.jpg"
+                  src="/images/logo/logo.jpg"
                   alt="Logo"
                 />
                 <span className="text-xl font-semibold text-green-800 dark:text-green-400">
@@ -251,7 +250,7 @@ const NavBar = () => {
                 {/* Plant Care Dropdown */}
                 <div className="relative group">
                   <Link
-                      to="/plant-care"
+                    to="/plant-care"
                     className="flex items-center space-x-1 text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400 py-4"
                   >
                     <span>Plant Care</span>
@@ -355,25 +354,47 @@ const NavBar = () => {
                 </button>
 
                 {/* Cart Icon */}
-                <Link
-                  to="/cart"
-                  className="p-2 text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400"
-                  title="Cart"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                {isAuthenticated ? (
+                  <Link
+                    to="/cart"
+                    className="p-2 text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400"
+                    title="Cart"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
-                </Link>
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
+                  </Link>
+                ) : (
+                  <Link
+                    to="/login"
+                    className="p-2 text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400"
+                    title="Login to view cart"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
+                  </Link>
+                )}
 
                 {/* Login/Profile Icon */}
                 {isAuthenticated ? (
@@ -406,22 +427,32 @@ const NavBar = () => {
                         className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50"
                       >
                         <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 border-b dark:border-gray-700">
-                          {firstName} {lastName}
+                          {profile.firstName} {profile.slastName}
                         </div>
-                        <Link
-                          to="/profile"
-                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900"
-                        >
-                          My Profile
-                        </Link>
-                        {userType === "Seller" && (
+                        {userType === "Customer" ? (
+                          <>
+                            <Link
+                              to="/myProfile"
+                              className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900"
+                            >
+                              My Profile
+                            </Link>
+                            <Link
+                              to="/orders"
+                              className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900"
+                            >
+                              My Orders
+                            </Link>
+                          </>
+                        ) : (
                           <Link
-                            to="/seller/dashboard"
+                            to="/sellerDashboard"
                             className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900"
                           >
                             Seller Dashboard
                           </Link>
                         )}
+
                         <button
                           onClick={handleLogout}
                           className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900"

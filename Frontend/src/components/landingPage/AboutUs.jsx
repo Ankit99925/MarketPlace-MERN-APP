@@ -1,13 +1,13 @@
 import SectionHeader from "./SectionHeader";
 import { Link } from "react-router-dom";
-
+import aboutUs from "../../assets/images/aboutus/aboutUs.jpg";
 const AboutUs = () => {
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden mb-16">
       <div className="md:flex">
         <div className="md:w-1/2">
           <img
-            src="../images/aboutus/aboutus.jpg"
+            src={aboutUs}
             alt="About Us"
             className="h-full w-full object-cover"
           />

@@ -13,19 +13,19 @@ import NewArrivals from "./NewArrivals";
 import PlantLoader from "../shared/PlantLoader";
 import ContactUs from "./ContactUs";
 import Footer from "./Footer";
+
 const LandingPage = () => {
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.public);
-  // const [activeTab, setActiveTab] = useState("all");
 
   useEffect(() => {
-    dispatch(fetchPublicProducts("all"));
+    dispatch(fetchPublicProducts());
   }, [dispatch]);
 
   return isLoading ? (
     <PlantLoader />
   ) : (
-    <div className="bg-gray-50">
+    <div className="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       {/* Hero Section */}
       <Hero />
 
@@ -53,6 +53,7 @@ const LandingPage = () => {
 
         {/* Newsletter */}
         <NewsLetter />
+
         {/*Footer*/}
         <Footer />
       </div>

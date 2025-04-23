@@ -39,7 +39,6 @@ const editUpdateToCloudinary = async (req, res, next) => {
       try {
         const publicId = getPublicId(existingImageUrl);
         await cloudinary.uploader.destroy(publicId);
-        console.log("Deleted old image from Cloudinary");
       } catch (deleteError) {
         console.error("Error deleting old image:", deleteError);
         // Continue even if delete fails
@@ -66,7 +65,6 @@ const editUpdateToCloudinary = async (req, res, next) => {
     req.fileUrl = uploadResult.secure_url;
     next();
   } catch (error) {
-    console.error("Upload error:", error);
     return res.status(500).json({ error: "Upload failed" });
   }
 };

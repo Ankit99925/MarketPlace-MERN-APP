@@ -44,7 +44,6 @@ export const fetchSellerProfile = createAsyncThunk(
 export const updateSellerProfile = createAsyncThunk(
   "seller/updateSellerProfile",
   async ({ userId, formData }) => {
-    console.log("formData", formData);
     const token = AuthHelper();
     const res = await axios.patch(
       `http://localhost:3000/api/seller/updateProfile/${userId}`,
@@ -56,7 +55,6 @@ export const updateSellerProfile = createAsyncThunk(
         },
       }
     );
-    console.log("res", res);
     if (res.status === 200) {
       return res.data;
     } else {
@@ -122,7 +120,6 @@ export const createProduct = createAsyncThunk(
   "seller/createProduct",
   async (data) => {
     const token = localStorage.getItem("jwtToken");
-    console.log(data);
     const res = await axios.post(
       "http://localhost:3000/api/seller/createProduct",
       data,
@@ -134,7 +131,6 @@ export const createProduct = createAsyncThunk(
       }
     );
     if (res.status === 201) {
-      console.log("Product created successfully", res);
       return res.data.product;
     } else {
       throw new Error(res.statusText || "Failed to create product");
@@ -146,7 +142,6 @@ export const editProduct = createAsyncThunk(
   "seller/editProduct",
   async ({ id, formData }) => {
     const token = localStorage.getItem("jwtToken");
-    console.log("formData", formData);
     const res = await axios.patch(
       `http://localhost:3000/api/seller/editProduct/${id}`,
       formData,
@@ -228,7 +223,6 @@ const sellerSlice = createSlice({
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.isLoading = false;
-        console.log("deleteProduct", action.payload);
         state.products = state.products.filter(
           (product) => product._id !== action.payload._id
         );

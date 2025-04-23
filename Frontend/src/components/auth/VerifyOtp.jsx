@@ -22,7 +22,6 @@ const VerifyOtp = () => {
         }
       );
 
-      console.log(data);
       toast.success("OTP verified successfully");
       navigate("/resetPassword");
     } catch (error) {
