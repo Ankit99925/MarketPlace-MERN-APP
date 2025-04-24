@@ -37,23 +37,24 @@ const Signup = () => {
           setErrors(err.response.data.errors);
         }
       });
-    
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">
           Signup
         </h2>
         {errors.map((err, index) => (
-          <div key={index}>{err.msg}</div>
+          <div key={index} className="text-red-500 dark:text-red-400">
+            {err.msg}
+          </div>
         ))}
         <form onSubmit={handleSignup}>
           <div className="mb-4">
             <label
               htmlFor="firstname"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-200"
             >
               First Name
             </label>
@@ -62,7 +63,10 @@ const Signup = () => {
               type="text"
               id="firstname"
               name="firstname"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 
+                       rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 
+                       dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 
+                       sm:text-sm"
               placeholder="Enter your first name"
               required
             />
@@ -70,7 +74,7 @@ const Signup = () => {
           <div className="mb-4">
             <label
               htmlFor="lastname"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-200"
             >
               Last Name
             </label>
@@ -79,7 +83,10 @@ const Signup = () => {
               type="text"
               id="lastname"
               name="lastname"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 
+                       rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 
+                       dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 
+                       sm:text-sm"
               placeholder="Enter your last name"
               required
             />
@@ -87,7 +94,7 @@ const Signup = () => {
           <div className="mb-4">
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-200"
             >
               Email
             </label>
@@ -96,7 +103,10 @@ const Signup = () => {
               type="email"
               id="email"
               name="email"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 
+                       rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 
+                       dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 
+                       sm:text-sm"
               placeholder="Enter your email"
               required
             />
@@ -104,7 +114,7 @@ const Signup = () => {
           <div className="mb-4">
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-200"
             >
               Password
             </label>
@@ -113,7 +123,10 @@ const Signup = () => {
               type="password"
               id="password"
               name="password"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 
+                       rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 
+                       dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 
+                       sm:text-sm"
               placeholder="Enter your password"
               required
             />
@@ -121,7 +134,7 @@ const Signup = () => {
           <div className="mb-4">
             <label
               htmlFor="confirmPassword"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-200"
             >
               Confirm Password
             </label>
@@ -130,7 +143,10 @@ const Signup = () => {
               type="password"
               id="confirmPassword"
               name="confirmPassword"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 
+                       rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 
+                       dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 
+                       sm:text-sm"
               placeholder="Confirm your password"
               required
             />
@@ -138,7 +154,7 @@ const Signup = () => {
           <div className="mb-4">
             <label
               htmlFor="usertype"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-200"
             >
               User Type
             </label>
@@ -146,7 +162,10 @@ const Signup = () => {
               ref={userTypeRef}
               id="usertype"
               name="usertype"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 
+                       rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 
+                       dark:bg-gray-700 dark:text-white
+                       sm:text-sm"
               required
             >
               <option value="Customer">Customer</option>
@@ -155,7 +174,9 @@ const Signup = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md 
+                     hover:bg-blue-600 focus:outline-none focus:ring-2 
+                     focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
           >
             Signup
           </button>

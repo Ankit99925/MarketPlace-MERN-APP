@@ -1,30 +1,5 @@
 @import "tailwindcss";
 
-@layer utilities {
-  .container {
-    @apply px-4 mx-auto;
-    max-width: 100%;
-  }
-
-  @screen sm {
-    .container {
-      max-width: 640px;
-    }
-  }
-
-  @screen md {
-    .container {
-      max-width: 768px;
-    }
-  }
-
-  @screen lg {
-    .container {
-      max-width: 1024px;
-    }
-  }
-}
-
 /* Base styles for light/dark mode */
 :root {
   /* Light theme variables */
@@ -52,20 +27,23 @@
   --border: #374151;
 }
 
-body {
-  @apply bg-[var(--background)] text-[var(--text)] transition-colors duration-200;
+@layer base {
+  body {
+    @apply bg-[var(--background)] text-[var(--text)] transition-colors duration-200;
+  }
 }
 
-/* Common component styles */
-.card {
-  @apply bg-[var(--surface)] border-[var(--border)] rounded-lg shadow-sm;
-}
+@layer components {
+  .card {
+    @apply bg-[var(--surface)] border-[var(--border)] rounded-lg shadow-sm;
+  }
 
-.button-primary {
-  @apply bg-[var(--primary)] text-white hover:bg-[var(--secondary)] transition-colors;
-}
+  .button-primary {
+    @apply bg-[var(--primary)] text-white hover:bg-[var(--secondary)] transition-colors;
+  }
 
-.input-field {
-  @apply bg-[var(--surface)] border-[var(--border)] text-[var(--text)] 
-         focus:border-[var(--primary)] focus:ring-[var(--primary)];
+  .input-field {
+    @apply bg-[var(--surface)] border-[var(--border)] text-[var(--text)] 
+           focus:border-[var(--primary)] focus:ring-[var(--primary)];
+  }
 }

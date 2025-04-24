@@ -45,7 +45,7 @@ authRouter.post(
   "/login",
   authLimiter,
   [emailValidator, passwordValidator],
-  
+
   authController.login
 );
 // authRouter.post("/head", readAuthToken);
