@@ -1,5 +1,6 @@
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
+import config from "../../../config/config";
 import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout,
@@ -19,9 +20,8 @@ const Checkout = () => {
   const token = localStorage.getItem("jwtToken");
 
   const fetchClientSecret = useCallback(async () => {
-    console.log("Sending to checkout:", checkoutData); // Debug log
     const { data } = await axios.post(
-      "http://localhost:3000/api/customer/create-checkout-session",
+      `${config.API_URL}/api/customer/create-checkout-session`,
       {
         products: checkoutData.products,
         finalPrice: checkoutData.finalPrice,
@@ -32,7 +32,6 @@ const Checkout = () => {
         },
       }
     );
-    console.log("Response:", data); // Debug log
     return data.clientSecret;
   }, [checkoutData]);
 

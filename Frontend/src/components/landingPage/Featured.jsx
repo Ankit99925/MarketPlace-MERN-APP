@@ -5,30 +5,26 @@ const Featured = () => {
   const featuredCategories = [
     {
       id: 1,
-      title: "Indoor Plants",
-      image:
-        "https://images.unsplash.com/photo-1463320726281-696a485928c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=300&q=80",
+      title: "Plants",
+      image: "/images/categories/plantsCollection.jpg",
       link: "/plants?category=indoor",
     },
     {
       id: 2,
-      title: "Seeds Collection",
-      image:
-        "https://images.unsplash.com/photo-1618812493104-e3e6a8e8a1a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=300&q=80",
+      title: "Seeds",
+      image: "/images/categories/seedsCollection.jpg",
       link: "/seeds",
     },
     {
       id: 3,
       title: "Plant Care",
-      image:
-        "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=300&q=80",
+      image: "/images/categories/plantCareCollection.jpg",
       link: "/plant-care",
     },
     {
       id: 4,
       title: "Garden Tools",
-      image:
-        "https://images.unsplash.com/photo-1466692476655-ab0c26c69cbf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=300&q=80",
+      image: "/images/categories/gardenToolsCollection.jpg",
       link: "/plant-care?category=tools",
     },
   ];

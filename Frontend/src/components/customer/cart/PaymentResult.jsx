@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchCustomerData } from "../../../store/slices/customerSlice";
 import axios from "axios";
-
+import config from "../../../config/config";
 const PaymentResult = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -12,7 +12,6 @@ const PaymentResult = () => {
 
   useEffect(() => {
     const sessionId = new URLSearchParams(location.search).get("status");
-    console.log("Session ID:", sessionId);
 
     if (!sessionId) {
       navigate("/cart");
@@ -21,11 +20,9 @@ const PaymentResult = () => {
 
     const checkStatus = async () => {
       try {
-        console.log("Checking payment status...");
         const token = localStorage.getItem("jwtToken");
 
         if (!token) {
-          console.error("No authentication token found");
           setStatus("error");
           setTimeout(() => {
             navigate("/cart");
@@ -34,7 +31,7 @@ const PaymentResult = () => {
         }
 
         const response = await axios.get(
-          `http://localhost:3000/api/customer/check-payment-result/${sessionId}`,
+          `${config.API_URL}/api/customer/check-payment-result/${sessionId}`,
           {
             withCredentials: true,
             headers: {
@@ -42,7 +39,6 @@ const PaymentResult = () => {
             },
           }
         );
-        console.log("Payment response:", response.data);
 
         if (response.data.paymentDetails === "paid") {
           setStatus("success");
@@ -57,7 +53,6 @@ const PaymentResult = () => {
           }, 2000);
         }
       } catch (error) {
-        console.error("Error:", error);
         setStatus("error");
         setTimeout(() => {
           navigate("/cart");

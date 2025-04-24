@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../store/slices/authSlice";
+import { toast } from "react-toastify";
+import config from "../../config/config";
 const Login = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -15,7 +17,7 @@ const Login = () => {
     e.preventDefault();
     await axios
       .post(
-        "http://localhost:3000/api/auth/login/",
+        `${config.API_URL}/api/auth/login/`,
         {
           email: emailRef.current.value,
           password: passwordRef.current.value,
@@ -23,21 +25,21 @@ const Login = () => {
         { headers: { Authorization: `Bearer ${jwtToken}` } }
       )
       .then((res) => {
-        console.log(res.data);
         dispatch(loginSuccess(res.data));
+        toast.success("Login successful");
         navigate("/");
       })
-      .catch((e) => setErrors(e));
+      .catch((e) => toast.error(e.response.data.message));
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/api/auth/googleLogin";
+    window.location.href = `${config.API_URL}/api/auth/googleLogin`;
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">
           Login
         </h2>
         {errors}
@@ -45,7 +47,7 @@ const Login = () => {
           <div className="mb-4">
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-200"
             >
               Email
             </label>
@@ -54,7 +56,10 @@ const Login = () => {
               type="email"
               id="email"
               name="email"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                       focus:ring-blue-500 focus:border-blue-500 
+                       dark:bg-gray-700 dark:text-white dark:placeholder-gray-400
+                       sm:text-sm"
               placeholder="Enter your email"
               required
             />
@@ -62,7 +67,7 @@ const Login = () => {
           <div className="mb-4">
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-200"
             >
               Password
             </label>
@@ -71,7 +76,10 @@ const Login = () => {
               type="password"
               id="password"
               name="password"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                       focus:ring-blue-500 focus:border-blue-500 
+                       dark:bg-gray-700 dark:text-white dark:placeholder-gray-400
+                       sm:text-sm"
               placeholder="Enter your password"
               required
             />
@@ -79,16 +87,17 @@ const Login = () => {
           <div className="mb-4 text-right">
             <Link
               to="/forgotPassword"
-              className="text-sm text-blue-500 hover:underline"
+              className="text-sm text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
             >
-              {" "}
               Forgot password?
             </Link>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mb-4"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
+                     dark:focus:ring-offset-gray-800 mb-4"
           >
             Login
           </button>
@@ -96,10 +105,10 @@ const Login = () => {
 
         <div className="relative my-4">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
+            <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">
+            <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
               Or continue with
             </span>
           </div>
@@ -107,7 +116,12 @@ const Login = () => {
 
         <button
           onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center bg-white border border-gray-300 rounded-md shadow-sm py-2 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="w-full flex items-center justify-center bg-white dark:bg-gray-700 
+                   border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-4 
+                   text-sm font-medium text-gray-700 dark:text-gray-200 
+                   hover:bg-gray-50 dark:hover:bg-gray-600 
+                   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+                   dark:focus:ring-offset-gray-800"
         >
           <svg
             className="h-5 w-5 mr-2"

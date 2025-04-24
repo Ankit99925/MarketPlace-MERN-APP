@@ -2,7 +2,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { editProduct } from "../../store/slices/sellerSlice";
+import { fetchSellerProducts } from "../../store/slices/sellerSlice";
+import { modalService, modalConfigs } from "../../utils/modalService";
+import PlantLoader from "../shared/PlantLoader";
 
 const EditProduct = () => {
   const { isLoading, products } = useSelector((state) => state.seller);
@@ -11,8 +13,6 @@ const EditProduct = () => {
   const { id } = useParams();
   const [selectedCategory, setSelectedCategory] = useState("Plant");
   const [imagePreview, setImagePreview] = useState(null);
-
-  console.log("URL ID:", id); // Check the exact ID from URL
 
   const {
     register,
@@ -26,7 +26,6 @@ const EditProduct = () => {
   if (!product) {
     return <div>Product not found</div>;
   }
-  console.log("Product:", product);
   useEffect(() => {
     if (product) {
       // Transform data before reset
@@ -49,40 +48,43 @@ const EditProduct = () => {
     }
   }, [product, reset]);
 
+  // Fetch products if not already loaded
+  useEffect(() => {
+    if (!products.length) {
+      dispatch(fetchSellerProducts());
+    }
+  }, [dispatch, products]);
+
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <PlantLoader />;
   }
 
   const categoryMap = {
     Plant: ["Indoor", "Outdoor", "Hanging"],
     Seed: ["Flower Seeds", "Vegetable Seeds", "Herbs"],
-    "Plant Care": ["Fertilizers", "Pots", "Tools", "Accessories"],
+    "Plant Care": ["Fertilizers", "Tools", "Accessories"],
+    Pots: ["Planters", "Pots", "Accessories"],
   };
 
   const onSubmit = async (data) => {
-    try {
-      const formData = new FormData();
-      Object.keys(data).forEach((key) => {
-        if (key === "image" && !data.image[0]) {
-          formData.append("image", data.image[0]);
-        } else if (key === "tags" && typeof data.tags === "string") {
-          formData.append(
-            "tags",
-            data.tags.split(",").map((tag) => tag.trim())
-          );
-        } else {
-          formData.append(key, data[key]);
-        }
-      });
-
-      await dispatch(editProduct({ id, formData })).unwrap();
-      navigate("/");
-    } catch (error) {
-      setError("root.serverError", {
-        type: "server",
-        message: error.message || "Failed to edit product",
-      });
-    }
+    // Pass only serializable data to modal
+    modalService(
+      modalConfigs.edit({
+        id,
+        productData: {
+          ...data,
+          image: data.image?.[0]
+            ? {
+                name: data.image[0].name,
+                size: data.image[0].size,
+                type: data.image[0].type,
+              }
+            : null,
+        },
+        // Store actual file separately
+        imageFile: data.image?.[0] || null,
+      })
+    );
   };
 
   const handleImageChange = (e) => {
@@ -369,7 +371,7 @@ const EditProduct = () => {
                     : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
                 }`}
             >
-              {isLoading ? "Editing..." : "Edit Product"}
+              {isLoading ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>

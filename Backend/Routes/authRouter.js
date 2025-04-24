@@ -1,5 +1,5 @@
 const express = require("express");
-
+const rateLimit = require("express-rate-limit");
 const { validationResult } = require("express-validator");
 
 const validationResultHandler = (req, res, next) => {
@@ -21,6 +21,12 @@ const {
 const authRouter = express.Router();
 const authController = require("../Controller/authController");
 
+const authLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 5, // Max 5 login/register attempts
+  message: "Too many login attempts. Please try again later.",
+});
+
 authRouter.post(
   "/signup",
   [
@@ -31,11 +37,13 @@ authRouter.post(
     confirmPasswordValidator,
     userTypeValidator,
   ],
+  authLimiter,
   validationResultHandler,
   authController.signup
 );
 authRouter.post(
   "/login",
+  authLimiter,
   [emailValidator, passwordValidator],
 
   authController.login
