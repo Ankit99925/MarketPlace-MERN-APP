@@ -10,10 +10,14 @@ const rateLimit = require("express-rate-limit");
 const port = process.env.PORT || 3000;
 const passport = require("passport");
 const corsOptions = {
-  origin: "http://localhost:5173", // replace with your frontend's origin
-  credentials: true, // allows cookies and credentials to be sent with the request
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // specify the allowed HTTP methods
-  allowedHeaders: ["Content-Type", "Authorization"], // specify allowed headers
+  origin: [
+    "http://localhost:5173", // Development
+    "http://localhost:4173", // Preview
+    process.env.FRONTEND_URL, // Production
+  ].filter(Boolean),
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 const authRouter = require("./Routes/authRouter");

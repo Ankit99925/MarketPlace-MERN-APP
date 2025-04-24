@@ -22,7 +22,7 @@ const ProfileCard = ({
       <div className="relative h-32 bg-gradient-to-r from-blue-500 to-indigo-600">
         <div className="absolute -bottom-10 left-8">
           <img
-            src={imagePreview || "https://via.placeholder.com/100"}
+            src={imagePreview}
             alt="Profile"
             className="w-20 h-20 rounded-full border-4 border-white dark:border-gray-800 object-cover"
           />
@@ -214,13 +214,6 @@ const ProfileCard = ({
                 Profile Picture
               </label>
               <div className="flex items-center space-x-4">
-                {/* <img
-                          src={
-                            imagePreview || "https://via.placeholder.com/100"
-                          }
-                          alt="Profile Preview"
-                          className="w-20 h-20 rounded-full border-2 border-gray-300 object-cover"
-                        /> */}
                 <label
                   htmlFor="profile-image-upload"
                   className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"

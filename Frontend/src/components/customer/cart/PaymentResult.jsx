@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchCustomerData } from "../../../store/slices/customerSlice";
 import axios from "axios";
-
+import config from "../../../config/config";
 const PaymentResult = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,7 +31,7 @@ const PaymentResult = () => {
         }
 
         const response = await axios.get(
-          `http://localhost:3000/api/customer/check-payment-result/${sessionId}`,
+          `${config.API_URL}/api/customer/check-payment-result/${sessionId}`,
           {
             withCredentials: true,
             headers: {

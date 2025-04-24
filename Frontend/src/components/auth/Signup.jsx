@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
-
+import config from "../../config/config";
 const Signup = () => {
   const firstNameRef = useRef();
   const lastNameRef = useRef();
@@ -17,7 +17,7 @@ const Signup = () => {
     e.preventDefault();
 
     axios
-      .post("http://localhost:3000/api/auth/signup/", {
+      .post(`${config.API_URL}/api/auth/signup/`, {
         firstName: firstNameRef.current.value,
         lastName: lastNameRef.current.value,
         email: emailRef.current.value,

@@ -38,9 +38,7 @@ function ProfilePage() {
         userType: profile.userType,
       });
       // Set image preview from profile
-      setImagePreview(
-        profile.profilePicture || "https://via.placeholder.com/100"
-      );
+      setImagePreview(profile.profilePicture);
     }
   }, [profile, reset]);
 
@@ -49,8 +47,6 @@ function ProfilePage() {
       setIsSubmitting(true);
       const formData = new FormData();
 
-      console.log("Raw form data:", data);
-
       // Add text fields
       formData.append("firstName", data.firstName);
       formData.append("lastName", data.lastName);
@@ -58,24 +54,10 @@ function ProfilePage() {
 
       // Use the selectedFile state instead of data.profilePicture
       if (selectedFile) {
-        console.log("File being appended:", selectedFile);
         formData.append("profilePicture", selectedFile);
       }
 
-      // Debug: Log all FormData entries
-      console.log("FormData contents:");
-      for (let pair of formData.entries()) {
-        console.log(pair[0], ":", pair[1]);
-        if (pair[1] instanceof File) {
-          console.log("File details:", {
-            name: pair[1].name,
-            type: pair[1].type,
-            size: pair[1].size,
-          });
-        }
-      }
-
-      const result = await dispatch(
+          const result = await dispatch(
         updateSellerProfile({ userId, formData })
       ).unwrap();
 

@@ -15,7 +15,6 @@ const Orders = () => {
     dispatch(fetchCustomerData());
   }, [dispatch]);
 
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center">

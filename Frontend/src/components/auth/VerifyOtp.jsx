@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import config from "../../config/config";
 const VerifyOtp = () => {
   const otpRef = useRef();
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const VerifyOtp = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:3000/api/auth/verifyotp",
+        `${config.API_URL}/api/auth/verifyotp`,
         {
           otp: otpRef.current.value,
         },

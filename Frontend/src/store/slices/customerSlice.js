@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { AuthHelper } from "../../utils/network-util";
-
+import config from "../../config/config";
 const initialState = {
   products: [],
   cart: [],
@@ -28,9 +28,12 @@ export const fetchCustomerProfile = createAsyncThunk(
   "customer/fetchCustomerProfile",
   async () => {
     const token = AuthHelper();
-    const res = await axios.get("http://localhost:3000/api/customer/profile", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await axios.get(
+      `${config.API_URL}/api/customer/profile`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
     if (res.status === 200) {
       return res.data;
@@ -44,18 +47,15 @@ export const updateCustomerProfile = createAsyncThunk(
   "customer/updateCustomerProfile",
   async ({ userId, formData }) => {
     const token = AuthHelper();
-    console.log(formData);
-    console.log(userId);
     try {
       const res = await axios.patch(
-        `http://localhost:3000/api/customer/profile/${userId}`,
+        `${config.API_URL}/api/customer/profile/${userId}`,
         formData,
         {
           headers: { Authorization: `Bearer ${token}` },
           encType: "multipart/form-data",
         }
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
       throw new Error(
@@ -82,7 +82,7 @@ export const fetchCustomerData = createAsyncThunk(
     });
 
     const queryString = params.toString();
-    const url = `http://localhost:3000/api/customer/data${
+    const url = `${config.API_URL}/api/customer/data${
       queryString ? `?${queryString}` : ""
     }`;
 
@@ -106,7 +106,7 @@ export const addProductToCart = createAsyncThunk(
       throw new Error("Not authenticated");
     }
     const res = await axios.post(
-      `http://localhost:3000/api/customer/addToCart/${productId}`,
+      `${config.API_URL}/api/customer/addToCart/${productId}`,
       {},
       {
         headers: {
@@ -123,7 +123,7 @@ export const removeProductFromCart = createAsyncThunk(
   async (productId) => {
     const token = AuthHelper();
     const res = await axios.delete(
-      `http://localhost:3000/api/customer/removeFromCart/${productId}`,
+      `${config.API_URL}/api/customer/removeFromCart/${productId}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     return res.data;
@@ -145,12 +145,8 @@ const customerSlice = createSlice({
     });
     builder.addCase(fetchCustomerData.fulfilled, (state, action) => {
       state.isLoading = false;
-      console.log("action.payload", action.payload);
-      console.log("action.payload.data", action.payload.cart);
-      console.log("action.payload.success", action.payload.success);
       if (action.payload.success) {
         const { products, metadata, cart, orders } = action.payload.data;
-        console.log("cart", cart);
         state.products = products;
         state.metadata = metadata;
         state.cart = cart;
@@ -164,7 +160,6 @@ const customerSlice = createSlice({
     });
 
     builder.addCase(addProductToCart.fulfilled, (state, action) => {
-      console.log("Added to cart:", action.payload);
       state.cart = action.payload;
     });
 

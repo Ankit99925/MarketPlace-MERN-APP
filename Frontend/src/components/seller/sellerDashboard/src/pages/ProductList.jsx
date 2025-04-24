@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../partials/Sidebar";
-import FilterButton from "../components/DropdownFilter";
 import { useSelector } from "react-redux";
 import ProductCard from "../../../../shared/ProductCard";
 function ProductList() {
@@ -28,9 +27,6 @@ function ProductList() {
 
               {/* Right: Actions */}
               <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-                {/* Filter button */}
-                <FilterButton align="right" />
-
                 {/* Add Product button */}
                 <Link
                   to="/addProduct"

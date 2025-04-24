@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import config from "../../config/config";
 const ResetPassword = () => {
   const newPasswordRef = useRef();
   const confirmNewPasswordRef = useRef();
@@ -14,7 +14,7 @@ const ResetPassword = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:3000/api/auth/resetPassword",
+        `${config.API_URL}/api/auth/resetPassword`,
         {
           newPassword: newPasswordRef.current.value,
           confirmNewPassword: confirmNewPasswordRef.current.value,

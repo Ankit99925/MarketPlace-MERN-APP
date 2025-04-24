@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { AuthHelper } from "../../utils/network-util";
-
+import config from "../../config/config";
 const initialState = {
   products: [],
   isLoading: false,
@@ -26,7 +26,7 @@ export const fetchSellerProfile = createAsyncThunk(
     const token = localStorage.getItem("jwtToken");
     try {
       const res = await axios.get(
-        `http://localhost:3000/api/seller/profile/${userId}`,
+        `${config.API_URL}/api/seller/profile/${userId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -46,7 +46,7 @@ export const updateSellerProfile = createAsyncThunk(
   async ({ userId, formData }) => {
     const token = AuthHelper();
     const res = await axios.patch(
-      `http://localhost:3000/api/seller/updateProfile/${userId}`,
+      `${config.API_URL}/api/seller/updateProfile/${userId}`,
       formData,
       {
         headers: {
@@ -66,7 +66,7 @@ export const fetchSellerProducts = createAsyncThunk(
   "seller/fetchSellerProducts",
   async (response) => {
     const token = localStorage.getItem("jwtToken");
-    const res = await axios("http://localhost:3000/api/seller/products", {
+    const res = await axios(`${config.API_URL}/api/seller/products`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = res.data.product;
@@ -84,7 +84,7 @@ export const fetchSellerOrders = createAsyncThunk(
     try {
       const token = AuthHelper();
 
-      const res = await axios.get("http://localhost:3000/api/seller/orders", {
+      const res = await axios.get(`${config.API_URL}/api/seller/orders`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -104,7 +104,7 @@ export const updateOrderDeliveryStatus = createAsyncThunk(
   async ({ orderId, status }) => {
     const token = AuthHelper();
     const res = await axios.patch(
-      `http://localhost:3000/api/seller/updateOrderStatus/${orderId}`,
+      `${config.API_URL}/api/seller/updateOrderStatus/${orderId}`,
       { status },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -121,7 +121,7 @@ export const createProduct = createAsyncThunk(
   async (data) => {
     const token = localStorage.getItem("jwtToken");
     const res = await axios.post(
-      "http://localhost:3000/api/seller/createProduct",
+      `${config.API_URL}/api/seller/createProduct`,
       data,
       {
         headers: {
@@ -143,7 +143,7 @@ export const editProduct = createAsyncThunk(
   async ({ id, formData }) => {
     const token = localStorage.getItem("jwtToken");
     const res = await axios.patch(
-      `http://localhost:3000/api/seller/editProduct/${id}`,
+      `${config.API_URL}/api/seller/editProduct/${id}`,
       formData,
       {
         headers: {
@@ -165,7 +165,7 @@ export const deleteProduct = createAsyncThunk(
   async (id) => {
     const token = AuthHelper();
     const res = await axios.delete(
-      `http://localhost:3000/api/seller/deleteProduct/${id}`,
+      `${config.API_URL}/api/seller/deleteProduct/${id}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     if (res.status === 200) {

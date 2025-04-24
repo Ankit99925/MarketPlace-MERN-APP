@@ -10,7 +10,6 @@ const Order = ({ order, products }) => {
     .map((item) => products.find((p) => p._id === item.product))
     .filter(Boolean); // Remove any undefined products
 
-  console.log("Found products:", productsInOrder);
 
   return (
     <div className="border border-gray-300 rounded-lg shadow-md p-4 bg-white flex flex-col gap-4">

@@ -5,6 +5,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const passport = require("passport");
 
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -80,7 +81,7 @@ exports.login = async (req, res) => {
     const jwtToken = jwt.sign(
       { userId: user._id, userType: user.userType },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: process.env.JWT_EXPIRES_IN }
     );
 
     res.status(200).json({
@@ -291,11 +292,11 @@ exports.googleLogin = passport.authenticate("google", {
 exports.googleAuthCallback = (req, res, next) => {
   passport.authenticate(
     "google",
-    { failureRedirect: "http://localhost:5173/login" },
+    { failureRedirect: `${process.env.FRONTEND_URL}/login` },
     (err, user) => {
       if (err) return next(err);
       if (!user)
-        return res.redirect("http://localhost:5173/login?error=auth_failed");
+        return res.redirect(`${process.env.FRONTEND_URL}/login?error=auth_failed`);
 
       const jwtToken = jwt.sign(
         {
@@ -310,7 +311,7 @@ exports.googleAuthCallback = (req, res, next) => {
       );
 
       res.redirect(
-        `http://localhost:5173/auth/google?jwtToken=${jwtToken}&userType=${user.userType}&firstName=${user.firstName}&lastName=${user.lastName}&profilePicture=${user.profilePicture}`
+        `${process.env.FRONTEND_URL}/auth/google?jwtToken=${jwtToken}&userType=${user.userType}&firstName=${user.firstName}&lastName=${user.lastName}&profilePicture=${user.profilePicture}`
       );
     }
   )(req, res, next);

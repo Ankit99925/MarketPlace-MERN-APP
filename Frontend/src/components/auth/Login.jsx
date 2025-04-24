@@ -4,6 +4,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../store/slices/authSlice";
 import { toast } from "react-toastify";
+import config from "../../config/config";
 const Login = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -16,7 +17,7 @@ const Login = () => {
     e.preventDefault();
     await axios
       .post(
-        "http://localhost:3000/api/auth/login/",
+        `${config.API_URL}/api/auth/login/`,
         {
           email: emailRef.current.value,
           password: passwordRef.current.value,
@@ -32,7 +33,7 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/api/auth/googleLogin";
+    window.location.href = `${config.API_URL}/api/auth/googleLogin`;
   };
 
   return (
