@@ -15,8 +15,6 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import themeReducer from "./slices/themeSlice";
-
 const persistConfig = {
   key: "root",
   storage,
@@ -30,7 +28,6 @@ const rootReducer = combineReducers({
   public: publicReducer,
   customer: customerReducer,
   modal: modalReducer,
-  theme: themeReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -75,15 +75,15 @@ const QuickViewProductCard = ({ product, isOpen, onClose }) => {
   if (!isOpen || !product) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
       <div
         ref={modalRef}
-        className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] animate-fadeIn"
+        className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] animate-fadeIn border border-white/20 dark:border-gray-700/20"
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors bg-white/50 dark:bg-gray-800/50 p-2 rounded-full backdrop-blur-sm hover:bg-white/70 dark:hover:bg-gray-800/70"
           aria-label="Close"
         >
           <FaTimes className="w-6 h-6" />
@@ -104,14 +104,14 @@ const QuickViewProductCard = ({ product, isOpen, onClose }) => {
             <div className="flex-grow">
               {/* Tags and categories */}
               <div className="flex flex-wrap gap-2 mb-3">
-                <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full">
+                <span className="bg-green-100/80 backdrop-blur-sm text-green-800 text-xs font-medium px-2.5 py-1 rounded-full">
                   {product.category}
                 </span>
-                <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full">
+                <span className="bg-blue-100/80 backdrop-blur-sm text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full">
                   {product.subCategory}
                 </span>
                 {product.isFeatured && (
-                  <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-1 rounded-full">
+                  <span className="bg-yellow-100/80 backdrop-blur-sm text-yellow-800 text-xs font-medium px-2.5 py-1 rounded-full">
                     Featured
                   </span>
                 )}
@@ -175,7 +175,7 @@ const QuickViewProductCard = ({ product, isOpen, onClose }) => {
                     {product.tags.map((tag, index) => (
                       <span
                         key={index}
-                        className="bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 text-xs font-medium px-2.5 py-1 rounded-full"
+                        className="bg-gray-100/80 backdrop-blur-sm text-gray-800 dark:bg-gray-700/80 dark:text-gray-300 text-xs font-medium px-2.5 py-1 rounded-full"
                       >
                         {tag}
                       </span>
@@ -187,12 +187,12 @@ const QuickViewProductCard = ({ product, isOpen, onClose }) => {
 
             {/* Add to Cart Section */}
             {isAuthenticated && userType !== "Seller" && (
-              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="pt-4 border-t border-gray-200/50 dark:border-gray-700/50">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center">
                     <button
                       onClick={decreaseQuantity}
-                      className="w-8 h-8 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-l-md"
+                      className="w-8 h-8 flex items-center justify-center bg-gray-200/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-l-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                       disabled={quantity <= 1}
                     >
                       -
@@ -205,11 +205,11 @@ const QuickViewProductCard = ({ product, isOpen, onClose }) => {
                       onChange={(e) =>
                         setQuantity(parseInt(e.target.value) || 1)
                       }
-                      className="w-12 h-8 text-center border-y border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                      className="w-12 h-8 text-center border-y border-gray-200/50 dark:border-gray-700/50 dark:bg-gray-800/80 dark:text-white backdrop-blur-sm focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                     <button
                       onClick={increaseQuantity}
-                      className="w-8 h-8 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-r-md"
+                      className="w-8 h-8 flex items-center justify-center bg-gray-200/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-r-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                       disabled={quantity >= product.stock}
                     >
                       +
@@ -227,8 +227,8 @@ const QuickViewProductCard = ({ product, isOpen, onClose }) => {
                   onClick={isInCart ? handleRemoveFromCart : handleAddToCart}
                   className={`w-full py-3 px-4 rounded-md font-medium transition-all duration-300 flex items-center justify-center ${
                     isInCart
-                      ? "bg-red-100 text-red-700 hover:bg-red-200"
-                      : "bg-green-600 text-white hover:bg-green-700"
+                      ? "bg-red-100/80 text-red-700 hover:bg-red-100 backdrop-blur-sm"
+                      : "bg-green-600/90 text-white hover:bg-green-600 backdrop-blur-sm"
                   }`}
                 >
                   {isInCart ? (

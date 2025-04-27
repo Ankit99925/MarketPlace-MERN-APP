@@ -92,13 +92,13 @@ const NavBar = () => {
   return (
     <>
       <nav className="bg-white dark:bg-gray-800 shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo Section */}
             <div className="flex-shrink-0">
               <Link to="/" className="flex items-center space-x-2">
                 <img
-                  className="h-8 w-8 rounded-full"
+                  className="h-10 w-10 rounded-full"
                   src="/images/logo/logo.jpg"
                   alt="Logo"
                 />
@@ -109,7 +109,7 @@ const NavBar = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-6">
               {/* Main Navigation Links with Dropdowns */}
               <div className="flex space-x-6">
                 {/* Plants Dropdown */}
@@ -294,7 +294,7 @@ const NavBar = () => {
               </div>
 
               {/* Search Bar */}
-              <div className="relative flex-1 max-w-xl">
+              <div className="relative flex-1 max-w-xl mx-6">
                 <input
                   onChange={handleSearchInput}
                   type="text"
@@ -498,15 +498,21 @@ const NavBar = () => {
               </div>
             </div>
 
-            {/* Mobile menu button */}
-            <div className="md:hidden flex items-center space-x-4">
+            {/* Mobile menu button and theme toggle */}
+            <div className="flex items-center space-x-4 md:hidden">
+              {/* Theme Toggle */}
               <button
                 onClick={handleThemeSwitch}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-gray-700/50 focus:outline-none"
+                title={
+                  theme === "dark"
+                    ? "Switch to Light Mode"
+                    : "Switch to Dark Mode"
+                }
               >
                 {theme === "dark" ? (
                   <svg
-                    className="w-6 h-6 text-yellow-400"
+                    className="w-5 h-5 text-yellow-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -518,7 +524,7 @@ const NavBar = () => {
                   </svg>
                 ) : (
                   <svg
-                    className="w-6 h-6 text-gray-700"
+                    className="w-5 h-5 text-gray-700"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -549,29 +555,186 @@ const NavBar = () => {
         </div>
       </nav>
 
+      {/* Mobile menu overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Mobile menu with accordions */}
       <div
-        className={`md:hidden ${
-          isMobileMenuOpen ? "block" : "hidden"
-        } bg-white dark:bg-gray-800 shadow-lg`}
+        className={`fixed top-0 right-0 h-full w-72 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg z-50 transform transition-transform duration-300 ease-in-out md:hidden ${
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       >
-        {/* Mobile menu content here - similar structure but with accordion-style dropdowns */}
-        {!isAuthenticated && (
-          <div className="px-4 py-3 space-y-2 border-t dark:border-gray-700">
-            <Link
-              to="/login"
-              className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+        <div className="flex justify-between items-center p-4 border-b border-gray-200/50 dark:border-gray-700/50">
+          <div className="w-8"></div> {/* Spacer for balance */}
+          <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+            Menu
+          </h2>
+          <button
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="p-2 rounded-md text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              Login
-            </Link>
-            <Link
-              to="/signup"
-              className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
-            >
-              Sign up
-            </Link>
-          </div>
-        )}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div className="overflow-y-auto h-full">
+          {/* Mobile menu content here - similar structure but with accordion-style dropdowns */}
+          {!isAuthenticated && (
+            <div className="px-4 py-3 space-y-3">
+              <Link
+                to="/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Login
+              </Link>
+              <Link
+                to="/signup"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Sign up
+              </Link>
+              <Link
+                to="/plants"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Plants
+              </Link>
+              <Link
+                to="/seeds"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Seeds
+              </Link>
+              <Link
+                to="/pots&planters"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Pots&Planters
+              </Link>
+              <Link
+                to="/plant-care"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Plant Care
+              </Link>
+            </div>
+          )}
+          {isAuthenticated && userType === "Customer" && (
+            <div className="px-4 py-3 space-y-3">
+              <Link
+                to="/myProfile"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                My Profile
+              </Link>
+              <Link
+                to="/orders"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                My Orders
+              </Link>
+              <Link
+                to="/plants"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Plants
+              </Link>
+              <Link
+                to="/seeds"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Seeds
+              </Link>
+              <Link
+                to="/pots&planters"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Pots&Planters
+              </Link>
+              <Link
+                to="/plant-care"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Plant Care
+              </Link>
+            </div>
+          )}
+          {isAuthenticated && userType === "Seller" && (
+            <div className="px-4 py-3 space-y-3">
+              <Link
+                to="/sellerDashboard"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                My Profile
+              </Link>
+              <Link
+                to="/orders"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                My Orders
+              </Link>
+              <Link
+                to="/plants"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Plants
+              </Link>
+              <Link
+                to="/seeds"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Seeds
+              </Link>
+              <Link
+                to="/pots-planters"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Pots&Planters
+              </Link>
+              <Link
+                to="/plant-care"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Plant Care
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
