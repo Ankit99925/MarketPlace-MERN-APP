@@ -9,20 +9,22 @@ const CartProductCard = ({ product }) => {
   };
 
   return (
-    <div className="flex items-center border border-green-300 rounded-xl shadow-lg p-6 bg-green-50">
+    <div className="flex items-center border border-green-300 rounded-xl shadow-lg p-6 bg-green-50 dark:bg-gray-800 dark:text-white">
       <img
         src={product.imageUrl || "/placeholder.png"}
         alt={product.productName}
         className="w-20 h-20 object-cover rounded-xl border border-green-200"
       />
       <div className="ml-6 flex-1">
-        <h3 className="text-xl font-bold text-green-700">
+        <h3 className="text-xl font-bold text-green-700 dark:text-white">
           {product.productName}
         </h3>
-        <p className="text-green-800 font-medium">
+        <p className="text-green-800 dark:text-gray-300 font-medium">
           Category: {product.category}
         </p>
-        <p className="text-green-900 font-semibold">Price: ${product.price}</p>
+        <p className="text-green-900 dark:text-gray-300 font-semibold">
+          Price: ${product.price}
+        </p>
       </div>
       <button
         onClick={() => handleRemoveFromCart(product._id)}

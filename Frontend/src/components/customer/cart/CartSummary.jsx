@@ -32,24 +32,29 @@ const CartSummary = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-green-50 to-green-100 shadow-lg rounded-2xl p-8">
-      <h2 className="text-3xl font-extrabold text-green-800 mb-6 text-center">
+    <div
+      className="bg-gradient-to-br from-green-50 to-green-100
+  dark:from-gray-800 dark:to-gray-800
+  shadow-lg rounded-2xl p-8
+  dark:text-white"
+    >
+      <h2 className="text-3xl font-extrabold text-green-800 dark:text-white mb-6 text-center">
         Cart Summary
       </h2>
       <div className="mb-6 space-y-4">
-        <p className="text-lg text-green-700 flex justify-between">
+        <p className="text-lg text-green-700 dark:text-gray-300 flex justify-between">
           <span>Total Price:</span>
           <span>${totalPrice.toFixed(2)}</span>
         </p>
-        <p className="text-lg text-green-700 flex justify-between">
+        <p className="text-lg text-green-700 dark:text-gray-300 flex justify-between">
           <span>Tax (10%):</span>
           <span>${tax.toFixed(2)}</span>
         </p>
-        <p className="text-lg text-green-700 flex justify-between">
+        <p className="text-lg text-green-700 dark:text-gray-300 flex justify-between">
           <span>Shipping:</span>
           <span>${shipping.toFixed(2)}</span>
         </p>
-        <p className="text-xl font-bold text-green-900 flex justify-between border-t pt-4">
+        <p className="text-xl font-bold text-green-900 dark:text-gray-300 flex justify-between border-t pt-4">
           <span>Final Price:</span>
           <span>${finalPrice.toFixed(2)}</span>
         </p>

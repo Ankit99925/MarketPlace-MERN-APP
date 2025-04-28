@@ -110,8 +110,8 @@ const ProfileCard = ({
               <input
                 {...register("firstName")}
                 disabled={!isEditing}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
-                                 focus:border-indigo-500 focus:ring-indigo-500 
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm
+                                 focus:border-indigo-500 focus:ring-indigo-500 text-black 
                                  disabled:bg-gray-100 dark:disabled:bg-gray-700
                                  dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
@@ -126,7 +126,7 @@ const ProfileCard = ({
                 {...register("lastName")}
                 disabled={!isEditing}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
-                                 focus:border-indigo-500 focus:ring-indigo-500 
+                                 focus:border-indigo-500 focus:ring-indigo-500 text-black 
                                  disabled:bg-gray-100 dark:disabled:bg-gray-700
                                  dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
@@ -141,7 +141,7 @@ const ProfileCard = ({
                 {...register("email")}
                 disabled={!isEditing}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
-                                 focus:border-indigo-500 focus:ring-indigo-500 
+                                 focus:border-indigo-500 focus:ring-indigo-500 text-black   
                                  disabled:bg-gray-100 dark:disabled:bg-gray-700
                                  dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
@@ -156,7 +156,7 @@ const ProfileCard = ({
                 {...register("userType")}
                 disabled
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
-                                 focus:border-indigo-500 focus:ring-indigo-500 
+                                 focus:border-indigo-500 focus:ring-indigo-500 text-black   
                                  disabled:bg-gray-100 dark:disabled:bg-gray-700
                                  dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />

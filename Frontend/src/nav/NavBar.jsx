@@ -25,7 +25,6 @@ const NavBar = () => {
   const navigate = useNavigate();
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const dropdownRef = useRef(null);
-  const searchRef = useRef(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -643,7 +642,7 @@ const NavBar = () => {
             </div>
           )}
           {isAuthenticated && userType === "Customer" && (
-            <div className="px-4 py-3 space-y-3">
+            <div ref={dropdownRef} className="px-4 py-3 space-y-3">
               <Link
                 to="/myProfile"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -652,12 +651,25 @@ const NavBar = () => {
                 My Profile
               </Link>
               <Link
+                to="/cart"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Cart
+              </Link>
+              <Link
                 to="/orders"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
               >
                 My Orders
               </Link>
+              <button
+                onClick={handleLogout}
+                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+              >
+                Logout
+              </button>
               <Link
                 to="/plants"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -690,20 +702,35 @@ const NavBar = () => {
           )}
           {isAuthenticated && userType === "Seller" && (
             <div className="px-4 py-3 space-y-3">
-              <Link
-                to="/sellerDashboard"
-                onClick={() => setIsMobileMenuOpen(false)}
+              <div ref={dropdownRef} className="flex flex-col space-y-3">
+                <Link
+                  to="/sellerDashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/sellerDashboard/profile"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+                >
+                  My Profile
+                </Link>
+                <Link
+                  to="/addProduct"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
+                >
+                  Add Product
+                </Link>
+              </div>
+              <button
+                onClick={handleLogout}
                 className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
               >
-                My Profile
-              </Link>
-              <Link
-                to="/orders"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block w-full px-4 py-2 text-center text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900 rounded-md text-base font-medium"
-              >
-                My Orders
-              </Link>
+                Logout
+              </button>
               <Link
                 to="/plants"
                 onClick={() => setIsMobileMenuOpen(false)}
