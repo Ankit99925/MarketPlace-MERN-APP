@@ -119,31 +119,13 @@ function AppRoutes() {
   );
 }
 
-function AppThemeProvider({ children }) {
-  const theme = useSelector((state) => state.theme.theme);
-
-  useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [theme]);
-
-  return children;
-}
-
 function App() {
   return (
-    <Provider store={store}>
-      <PersistGate loading={<PlantLoader />} persistor={persistor}>
-        <BrowserRouter>
-          <AppThemeProvider>
-            <AppRoutes />
-          </AppThemeProvider>
-        </BrowserRouter>
-      </PersistGate>
-    </Provider>
+    <PersistGate loading={<PlantLoader />} persistor={persistor}>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </PersistGate>
   );
 }
 

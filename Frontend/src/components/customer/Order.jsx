@@ -12,13 +12,13 @@ const Order = ({ order, products }) => {
 
 
   return (
-    <div className="border border-gray-300 rounded-lg shadow-md p-4 bg-white flex flex-col gap-4">
+    <div className="border border-gray-300 rounded-lg shadow-md p-4 bg-white dark:bg-gray-800 dark:text-white flex flex-col gap-4">
       {/* Order ID */}
-      <div className="text-sm text-gray-500">Order ID: {order._id}</div>
+      <div className="text-sm text-gray-500 dark:text-white">Order ID: {order._id}</div>
 
       {/* Order Details */}
       <div className="flex justify-between items-center">
-        <p className="text-gray-700 font-bold">
+        <p className="text-gray-700 dark:text-white font-bold">
           Total Amount: ${order.total?.toFixed(2)}
         </p>
         <span
@@ -39,13 +39,13 @@ const Order = ({ order, products }) => {
       </div>
 
       {/* Order Date */}
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-gray-500 dark:text-white">
         Order Date: {new Date(order.createdAt).toLocaleDateString()}
       </p>
 
       {/* Shipping Address if available */}
       {order.shippingAddress && (
-        <div className="text-sm text-gray-600 border-t pt-2">
+        <div className="text-sm text-gray-600 dark:text-white border-t pt-2">
           <p className="font-medium">Shipping Address:</p>
           <p>{order.shippingAddress.street}</p>
           <p>
@@ -57,7 +57,7 @@ const Order = ({ order, products }) => {
 
       {/* Seller Details */}
       {order.sellerDetails && (
-        <div className="text-sm text-gray-600 border-t pt-2">
+        <div className="text-sm text-gray-600 dark:text-white border-t pt-2">
           <p className="font-medium">Seller Information:</p>
           <p>Seller: {order.sellerDetails.name}</p>
           <p>Contact: {order.sellerDetails.email}</p>

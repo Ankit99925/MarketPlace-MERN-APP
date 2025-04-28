@@ -66,8 +66,19 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl">
+    <div
+      className="
+        min-h-screen
+        bg-gradient-to-b from-green-50 to-white
+        dark:bg-gray-900 dark:from-gray-900 dark:to-gray-900
+        py-12 px-4 sm:px-6 lg:px-8
+      "
+    >
+      <div
+        className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl
+      dark:bg-gray-800
+      "
+      >
         {errors.root?.serverError && (
           <div className="p-4 mb-4 bg-red-50 border-l-4 border-red-500">
             <p className="text-red-700">{errors.root.serverError.message}</p>
@@ -75,10 +86,10 @@ const AddProduct = () => {
         )}
 
         <div className="px-8 py-6 border-b border-gray-200">
-          <h2 className="text-3xl font-bold text-gray-900 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center">
             Add New Product
           </h2>
-          <p className="mt-2 text-center text-gray-600">
+          <p className="mt-2 text-center text-gray-600 dark:text-gray-400">
             Fill in the details to add a new product to your store
           </p>
         </div>
@@ -87,7 +98,7 @@ const AddProduct = () => {
           <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
             {/* Product Name */}
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Product Name
               </label>
               <input
@@ -95,8 +106,7 @@ const AddProduct = () => {
                   required: "Product name is required",
                 })}
                 type="text"
-                className={`mt-1 block w-full rounded-md shadow-sm focus:border-green-500 focus:ring-green-500 
-                  ${errors.productName ? "border-red-300" : "border-gray-300"}`}
+                className={`mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-green-500 focus:ring-green-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
                 placeholder="Enter product name"
               />
               {errors.productName && (
@@ -108,13 +118,13 @@ const AddProduct = () => {
 
             {/* Brand */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Brand
               </label>
               <input
                 {...register("brand", { required: "Brand is required" })}
                 type="text"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                className={`mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-green-500 focus:ring-green-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
                 placeholder="Enter brand name"
               />
               {errors.brand && (
@@ -126,7 +136,7 @@ const AddProduct = () => {
 
             {/* Price */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Price
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
@@ -140,7 +150,7 @@ const AddProduct = () => {
                   })}
                   type="number"
                   step="0.01"
-                  className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                  className={`pl-7 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-green-500 focus:ring-green-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
                   placeholder="0.00"
                 />
               </div>
@@ -153,7 +163,7 @@ const AddProduct = () => {
 
             {/* Stock */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Stock
               </label>
               <input
@@ -162,20 +172,20 @@ const AddProduct = () => {
                   min: { value: 0, message: "Stock must be positive" },
                 })}
                 type="number"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                className={`mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-green-500 focus:ring-green-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
                 placeholder="Enter stock quantity"
               />
             </div>
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Category
               </label>
               <select
                 {...register("category")}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                className={`mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-green-500 focus:ring-green-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
               >
                 {Object.keys(categoryMap).map((category) => (
                   <option key={category} value={category}>
@@ -187,12 +197,12 @@ const AddProduct = () => {
 
             {/* Sub Category */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Sub Category
               </label>
               <select
                 {...register("subCategory")}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                className={`mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-green-500 focus:ring-green-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
               >
                 {categoryMap[selectedCategory].map((subCategory) => (
                   <option key={subCategory} value={subCategory}>
@@ -204,7 +214,7 @@ const AddProduct = () => {
 
             {/* Rating */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Rating
               </label>
               <input
@@ -217,7 +227,7 @@ const AddProduct = () => {
                 min="1"
                 max="5"
                 step="0.1"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                className={`mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-green-500 focus:ring-green-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
                 placeholder="Rate 1-5"
               />
             </div>
@@ -228,7 +238,7 @@ const AddProduct = () => {
                 <input
                   {...register("isFeatured")}
                   type="checkbox"
-                  className="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-500 focus:ring-green-500"
+                  className={`rounded border-gray-300 dark:border-gray-700 text-green-600 shadow-sm focus:border-green-500 focus:ring-green-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
                 />
                 <span className="ml-2 text-sm text-gray-600">
                   Featured Product
@@ -238,20 +248,20 @@ const AddProduct = () => {
 
             {/* Tags */}
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Tags (comma separated)
               </label>
               <input
                 {...register("tags")}
                 type="text"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                className={`mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-green-500 focus:ring-green-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
                 placeholder="organic, indoor, beginner-friendly"
               />
             </div>
 
             {/* Description */}
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Description
               </label>
               <textarea
@@ -259,14 +269,14 @@ const AddProduct = () => {
                   required: "Description is required",
                 })}
                 rows="4"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                className={`mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-green-500 focus:ring-green-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
                 placeholder="Describe your product..."
               />
             </div>
 
             {/* Image Upload */}
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Product Image
               </label>
               <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
@@ -293,7 +303,7 @@ const AddProduct = () => {
                     </svg>
                   )}
                   <div className="flex text-sm text-gray-600">
-                    <label className="relative cursor-pointer bg-white rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500">
+                    <label className="relative cursor-pointer bg-white dark:bg-gray-800 rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500">
                       <span>Upload a file</span>
                       <input
                         {...register("image", {

@@ -1,14 +1,12 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleTheme } from "../store/slices/themeSlice";
+import { useTheme } from "../utils/ThemeContext";
 
 export default function ThemeToggle() {
-  const dispatch = useDispatch();
-  const theme = useSelector((state) => state.theme.theme);
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <button
-      onClick={() => dispatch(toggleTheme())}
+      onClick={() => toggleTheme()}
       className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none"
       title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
     >

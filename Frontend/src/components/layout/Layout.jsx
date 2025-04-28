@@ -30,7 +30,7 @@ const FilterableLayout = () => {
       {/* Filter Header */}
       <div className="bg-green-100 dark:bg-gray-800 p-4 shadow-md">
         <div className="container mx-auto">
-          <div className="flex items-center gap-4">
+          <div className="flex justify-end mr-12 items-center gap-8">
             <FilterButton onClick={() => setIsFilterSidebarOpen(true)} />
             <SortDropdown />
           </div>

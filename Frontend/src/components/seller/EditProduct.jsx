@@ -95,8 +95,12 @@ const EditProduct = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white py-12 px-4 sm:px-6 lg:px-8
+    dark:bg-gray-900
+    ">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl
+      dark:bg-gray-800
+      ">
         {errors.root?.serverError && (
           <div className="p-4 mb-4 bg-red-50 border-l-4 border-red-500">
             <p className="text-red-700">{errors.root.serverError.message}</p>
@@ -124,7 +128,8 @@ const EditProduct = () => {
                   required: "Product name is required",
                 })}
                 type="text"
-                className={`mt-1 block w-full rounded-md shadow-sm focus:border-green-500 focus:ring-green-500 
+                className={`mt-1 block w-full rounded-md shadow-sm focus:border-green-500 focus:ring-green-500
+                  dark:bg-gray-800 dark:text-white
                   ${errors.productName ? "border-red-300" : "border-gray-300"}`}
                 placeholder="Enter product name"
               />
@@ -143,7 +148,9 @@ const EditProduct = () => {
               <input
                 {...register("brand", { required: "Brand is required" })}
                 type="text"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500
+                dark:bg-gray-800 dark:text-white
+                "
                 placeholder="Enter brand name"
               />
               {errors.brand && (
@@ -169,7 +176,9 @@ const EditProduct = () => {
                   })}
                   type="number"
                   step="0.01"
-                  className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                  className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500
+                  dark:bg-gray-800 dark:text-white
+                  "
                   placeholder="0.00"
                 />
               </div>
@@ -191,7 +200,9 @@ const EditProduct = () => {
                   min: { value: 0, message: "Stock must be positive" },
                 })}
                 type="number"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500
+                dark:bg-gray-800 dark:text-white
+                "
                 placeholder="Enter stock quantity"
               />
             </div>
@@ -204,7 +215,9 @@ const EditProduct = () => {
               <select
                 {...register("category")}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500
+                dark:bg-gray-800 dark:text-white
+                "
               >
                 {Object.keys(categoryMap).map((category) => (
                   <option key={category} value={category}>
@@ -221,7 +234,9 @@ const EditProduct = () => {
               </label>
               <select
                 {...register("subCategory")}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500
+                dark:bg-gray-800 dark:text-white
+                "
               >
                 {categoryMap[selectedCategory].map((subCategory) => (
                   <option key={subCategory} value={subCategory}>
@@ -246,7 +261,9 @@ const EditProduct = () => {
                 min="1"
                 max="5"
                 step="0.1"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500
+                dark:bg-gray-800 dark:text-white
+                "
                 placeholder="Rate 1-5"
               />
             </div>
@@ -257,7 +274,9 @@ const EditProduct = () => {
                 <input
                   {...register("isFeatured")}
                   type="checkbox"
-                  className="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-500 focus:ring-green-500"
+                  className="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-500 focus:ring-green-500
+                  dark:bg-gray-800 dark:text-white
+                  "
                 />
                 <span className="ml-2 text-sm text-gray-600">
                   Featured Product
@@ -273,7 +292,9 @@ const EditProduct = () => {
               <input
                 {...register("tags")}
                 type="text"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500
+                dark:bg-gray-800 dark:text-white
+                "
                 placeholder="organic, indoor, beginner-friendly"
               />
             </div>
@@ -288,7 +309,9 @@ const EditProduct = () => {
                   required: "Description is required",
                 })}
                 rows="4"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500
+                dark:bg-gray-800 dark:text-white
+                "
                 placeholder="Describe your product..."
               />
             </div>
@@ -304,11 +327,15 @@ const EditProduct = () => {
                     <img
                       src={imagePreview}
                       alt="Preview"
-                      className="mx-auto h-32 w-32 object-cover rounded-md"
+                      className="mx-auto h-32 w-32 object-cover rounded-md
+                      dark:bg-gray-800 dark:text-white
+                      "
                     />
                   ) : (
                     <svg
-                      className="mx-auto h-12 w-12 text-gray-400"
+                      className="mx-auto h-12 w-12 text-gray-400
+                      dark:bg-gray-800 dark:text-white
+                      "
                       stroke="currentColor"
                       fill="none"
                       viewBox="0 0 48 48"

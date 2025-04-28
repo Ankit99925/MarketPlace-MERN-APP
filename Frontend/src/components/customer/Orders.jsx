@@ -24,8 +24,8 @@ const Orders = () => {
   }
 
   return (
-    <div className="min-h-screen bg-green-50 p-6">
-      <h1 className="text-3xl font-bold text-green-800 mb-6 text-center">
+    <div className="min-h-screen bg-green-50 p-6 dark:bg-gray-900 dark:text-white">
+      <h1 className="text-3xl font-bold text-green-800 dark:text-white mb-6 text-center">
         Your Orders
       </h1>
 
