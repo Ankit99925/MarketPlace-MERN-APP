@@ -115,7 +115,7 @@ exports.createCheckoutSession = async (req, res) => {
     mode: "payment",
     ui_mode: "embedded",
     return_url:
-      "http://localhost:5173/payment-result?status={CHECKOUT_SESSION_ID}",
+      `${process.env.FRONTEND_URL}/payment-result?status={CHECKOUT_SESSION_ID}`,
   });
 
   res.send({ clientSecret: session.client_secret });
