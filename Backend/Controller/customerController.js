@@ -87,6 +87,9 @@ exports.createCheckoutSession = async (req, res) => {
   const subtotal = products.reduce((sum, product) => sum + product.price, 0);
 
   const session = await stripe.checkout.sessions.create({
+    metadata: {
+      finalPrice: finalPrice.toString(),
+    },
     line_items: [
       // Show each product individually
       ...products.map((product) => ({
@@ -114,8 +117,7 @@ exports.createCheckoutSession = async (req, res) => {
     ],
     mode: "payment",
     ui_mode: "embedded",
-    return_url:
-      `${process.env.FRONTEND_URL}/payment-result?status={CHECKOUT_SESSION_ID}`,
+    return_url: `${process.env.FRONTEND_URL}/payment-result?status={CHECKOUT_SESSION_ID}`,
   });
 
   res.send({ clientSecret: session.client_secret });
@@ -127,6 +129,9 @@ exports.checkPaymentResult = async (req, res) => {
 
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const finalPrice = session.metadata.finalPrice
+      ? parseFloat(session.metadata.finalPrice)
+      : null;
     if (session.payment_status === "paid") {
       const user = await User.findById(userId).populate("cart");
       let totalAmount = 0;
@@ -140,7 +145,7 @@ exports.checkPaymentResult = async (req, res) => {
       }));
       const orders = new order({
         items: items,
-        total: totalAmount,
+        total: finalPrice,
         status: "pending",
         seller: Product.findById(user.cart).seller,
         paymentDetails: session.payment_status,

@@ -5,10 +5,8 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const passport = require("passport");
 
-
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
 
 exports.signup = async (req, res) => {
   try {
@@ -296,7 +294,9 @@ exports.googleAuthCallback = (req, res, next) => {
     (err, user) => {
       if (err) return next(err);
       if (!user)
-        return res.redirect(`${process.env.FRONTEND_URL}/login?error=auth_failed`);
+        return res.redirect(
+          `${process.env.FRONTEND_URL}/login?error=auth_failed`
+        );
 
       const jwtToken = jwt.sign(
         {

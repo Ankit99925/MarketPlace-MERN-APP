@@ -27,9 +27,8 @@ import HerbSeeds from "./components/seeds/HerbSeeds";
 import VegetableSeeds from "./components/seeds/VegetableSeeds";
 import PlantCare from "./components/plantCare/PlantCare";
 import NotFound from "./components/shared/NotFound";
-import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { store, persistor } from "./store/store";
+import { persistor } from "./store/store";
 import PlantLoader from "./components/shared/PlantLoader";
 import { useEffect } from "react";
 import { fetchCustomerData } from "./store/slices/customerSlice";
@@ -40,7 +39,7 @@ import ModalContainer from "./components/shared/ModalContainer";
 import SearchPage from "./components/shared/SearchResults";
 import PotsAndPlanter from "./components/potandplanter/PotsAndPlanter";
 import Layout from "./components/layout/Layout";
-
+import useAutoLogout from "./components/auth/useAutoLogout";
 function AppRoutes() {
   const { isAuthenticated, userType } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -54,6 +53,8 @@ function AppRoutes() {
       }
     }
   }, [isAuthenticated, userType, dispatch]);
+
+  useAutoLogout();
 
   return (
     <>

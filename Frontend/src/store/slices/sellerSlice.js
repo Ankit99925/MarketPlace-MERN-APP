@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import { AuthHelper } from "../../utils/network-util";
-import config from "../../config/config";
+import axios from "../../config/axiosInstance";
 const initialState = {
   products: [],
   isLoading: false,
@@ -23,14 +21,8 @@ const initialState = {
 export const fetchSellerProfile = createAsyncThunk(
   "seller/fetchSellerProfile",
   async (userId) => {
-    const token = localStorage.getItem("jwtToken");
     try {
-      const res = await axios.get(
-        `${config.API_URL}/api/seller/profile/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await axios.get(`/api/seller/profile/${userId}`);
       const data = res.data;
       if (res.status === 200) {
         return data;
@@ -44,13 +36,11 @@ export const fetchSellerProfile = createAsyncThunk(
 export const updateSellerProfile = createAsyncThunk(
   "seller/updateSellerProfile",
   async ({ userId, formData }) => {
-    const token = AuthHelper();
     const res = await axios.patch(
-      `${config.API_URL}/api/seller/updateProfile/${userId}`,
+      `/api/seller/updateProfile/${userId}`,
       formData,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       }
@@ -65,10 +55,7 @@ export const updateSellerProfile = createAsyncThunk(
 export const fetchSellerProducts = createAsyncThunk(
   "seller/fetchSellerProducts",
   async (response) => {
-    const token = localStorage.getItem("jwtToken");
-    const res = await axios(`${config.API_URL}/api/seller/products`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await axios(`/api/seller/products`);
     const data = res.data.product;
     if (res.status === 200) {
       return data;
@@ -82,11 +69,7 @@ export const fetchSellerOrders = createAsyncThunk(
   "seller/fetchSellerOrders",
   async () => {
     try {
-      const token = AuthHelper();
-
-      const res = await axios.get(`${config.API_URL}/api/seller/orders`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(`/api/seller/orders`);
 
       const data = res.data.orders;
 
@@ -102,12 +85,9 @@ export const fetchSellerOrders = createAsyncThunk(
 export const updateOrderDeliveryStatus = createAsyncThunk(
   "seller/updateOrderDeliveryStatus",
   async ({ orderId, status }) => {
-    const token = AuthHelper();
-    const res = await axios.patch(
-      `${config.API_URL}/api/seller/updateOrderStatus/${orderId}`,
-      { status },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    const res = await axios.patch(`/api/seller/updateOrderStatus/${orderId}`, {
+      status,
+    });
     if (res.status === 200) {
       return res.data.order;
     } else {
@@ -119,17 +99,11 @@ export const updateOrderDeliveryStatus = createAsyncThunk(
 export const createProduct = createAsyncThunk(
   "seller/createProduct",
   async (data) => {
-    const token = localStorage.getItem("jwtToken");
-    const res = await axios.post(
-      `${config.API_URL}/api/seller/createProduct`,
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const res = await axios.post(`/api/seller/createProduct`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     if (res.status === 201) {
       return res.data.product;
     } else {
@@ -141,17 +115,11 @@ export const createProduct = createAsyncThunk(
 export const editProduct = createAsyncThunk(
   "seller/editProduct",
   async ({ id, formData }) => {
-    const token = localStorage.getItem("jwtToken");
-    const res = await axios.patch(
-      `${config.API_URL}/api/seller/editProduct/${id}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const res = await axios.patch(`/api/seller/editProduct/${id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     if (res.status === 201) {
       return res.data.product;
     } else {
@@ -163,11 +131,7 @@ export const editProduct = createAsyncThunk(
 export const deleteProduct = createAsyncThunk(
   "seller/deleteProduct",
   async (id) => {
-    const token = AuthHelper();
-    const res = await axios.delete(
-      `${config.API_URL}/api/seller/deleteProduct/${id}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    const res = await axios.delete(`/api/seller/deleteProduct/${id}`);
     if (res.status === 200) {
       return id;
     } else {

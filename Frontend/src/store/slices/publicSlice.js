@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import config from "../../config/config";
+import axios from "../../config/axiosInstance";
 
 const initialState = {
   products: [],
@@ -35,7 +34,7 @@ const initialState = {
 export const fetchPublicProducts = createAsyncThunk(
   "public/fetchPublicProducts",
   async () => {
-    const response = await axios.get(`${config.API_URL}/api/public`);
+    const response = await axios.get(`/api/public`);
     return response.data;
   }
 );
@@ -56,7 +55,7 @@ export const fetchFilteredProducts = createAsyncThunk(
       }
     });
 
-    const response = await axios.get(`${config.API_URL}/api/public?${params}`);
+    const response = await axios.get(`/api/public?${params}`);
     return response.data;
   }
 );

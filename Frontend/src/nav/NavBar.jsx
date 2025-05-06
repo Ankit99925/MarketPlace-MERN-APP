@@ -12,6 +12,7 @@ import {
   fetchFilteredProducts,
 } from "../store/slices/publicSlice";
 import { debounce } from "lodash";
+import { toast } from "react-toastify";
 
 const NavBar = () => {
   const { theme, setTheme } = useTheme();
@@ -29,10 +30,18 @@ const NavBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const dispatch = useDispatch();
+  let isLoggingOut = false;
+
   const handleLogout = () => {
-    dispatch(logout());
-    navigate("/");
-    setShowProfileDropdown(false);
+    if (!isLoggingOut) {
+      isLoggingOut = true;
+      dispatch(logout());
+      toast.success("Logged out successfully");
+      navigate("/login");
+      setTimeout(() => {
+        isLoggingOut = false;
+      }, 2000);
+    }
   };
   useEffect(() => {
     if (isAuthenticated && userType === "Customer") {

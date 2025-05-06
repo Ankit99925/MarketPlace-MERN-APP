@@ -1,10 +1,9 @@
 import { useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import axios from "../../config/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../store/slices/authSlice";
 import { toast } from "react-toastify";
-import config from "../../config/config";
 const Login = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -16,14 +15,10 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     await axios
-      .post(
-        `${config.API_URL}/api/auth/login/`,
-        {
-          email: emailRef.current.value,
-          password: passwordRef.current.value,
-        },
-        { headers: { Authorization: `Bearer ${jwtToken}` } }
-      )
+      .post(`/api/auth/login/`, {
+        email: emailRef.current.value,
+        password: passwordRef.current.value,
+      })
       .then((res) => {
         dispatch(loginSuccess(res.data));
         toast.success("Login successful");

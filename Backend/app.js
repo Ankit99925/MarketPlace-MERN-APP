@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const path = require("path");
 const app = express();
 const cors = require("cors");
 const helmet = require("helmet");
@@ -63,6 +64,16 @@ app.use("/api/public", publicRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/seller", isLoggedIn, isSeller, sellerRouter);
 app.use("/api/customer", isLoggedIn, isCustomer, customerRouter);
+
+// --- Serve static files from React build ---
+app.use(express.static(path.join(__dirname, "../Frontend/dist")));
+
+// --- Catch-all: send back React's index.html for any non-API route ---
+app.get("*", (req, res) => {
+  console.log("Catch-all route hit for:", req.url);
+  res.sendFile(path.join(__dirname, "../Frontend/dist", "index.html"));
+});
+
 app.use(errorController.get404);
 
 app.listen(port, () => {

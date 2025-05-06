@@ -54,7 +54,7 @@ function Dashboard() {
                 <p className="text-3xl font-bold text-green-600">
                   $
                   {orders
-                    ?.reduce((acc, order) => acc + order.totalAmount, 0)
+                    ?.reduce((acc, order) => acc + (order.total || 0), 0)
                     .toFixed(2) || "0.00"}
                 </p>
               </div>
@@ -100,7 +100,7 @@ function Dashboard() {
                           <td className="py-4">
                             {new Date(order.createdAt).toLocaleDateString()}
                           </td>
-                          <td className="py-4">${order.totalAmount}</td>
+                          <td className="py-4">${order.total}</td>
                           <td className="py-4">
                             <span
                               className={`px-3 py-1 rounded-full text-sm ${
