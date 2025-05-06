@@ -14,9 +14,12 @@ const PaymentResult = () => {
   useEffect(() => {
     console.log("PaymentResult component mounted");
     console.log("Current location:", location.pathname + location.search);
+    console.log("Window location:", window.location.href);
 
-    // Check if this is a success or canceled status
-    const queryParams = new URLSearchParams(location.search);
+    // Extract query parameters
+    const queryParams = new URLSearchParams(
+      location.search || window.location.search
+    );
     const resultStatus = queryParams.get("status");
     const sessionId = queryParams.get("session_id");
 
@@ -33,8 +36,11 @@ const PaymentResult = () => {
       return;
     }
 
-    // If no session ID, try to get it from the status parameter (for backward compatibility)
-    const finalSessionId = sessionId || queryParams.get("status");
+    // If no explicit session ID, try to extract it from the status parameter
+    // (for backward compatibility with the old URL format)
+    const finalSessionId =
+      sessionId ||
+      (resultStatus && resultStatus.startsWith("cs_") ? resultStatus : null);
 
     if (!finalSessionId) {
       console.log("No session ID found, redirecting to cart");
