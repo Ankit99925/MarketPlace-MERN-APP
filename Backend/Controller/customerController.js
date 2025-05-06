@@ -86,6 +86,12 @@ exports.createCheckoutSession = async (req, res) => {
   const { products, finalPrice } = req.body;
   const subtotal = products.reduce((sum, product) => sum + product.price, 0);
 
+  // Add debugging logs
+  console.log("Creating checkout session with:");
+  console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
+  const returnUrl = `${process.env.FRONTEND_URL}/payment-result?status={CHECKOUT_SESSION_ID}`;
+  console.log("Return URL:", returnUrl);
+
   const session = await stripe.checkout.sessions.create({
     metadata: {
       finalPrice: finalPrice.toString(),
@@ -117,9 +123,10 @@ exports.createCheckoutSession = async (req, res) => {
     ],
     mode: "payment",
     ui_mode: "embedded",
-    return_url: `${process.env.FRONTEND_URL}/payment-result?status={CHECKOUT_SESSION_ID}`,
+    return_url: returnUrl,
   });
 
+  console.log("Stripe session created:", session.id);
   res.send({ clientSecret: session.client_secret });
 };
 
@@ -127,8 +134,17 @@ exports.checkPaymentResult = async (req, res) => {
   const { sessionId } = req.params;
   const userId = req.userId;
 
+  console.log("Checking payment result for session:", sessionId);
+  console.log("User ID:", userId);
+
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
+    console.log("Retrieved Stripe session:", {
+      id: session.id,
+      payment_status: session.payment_status,
+      metadata: session.metadata,
+    });
+
     const finalPrice = session.metadata.finalPrice
       ? parseFloat(session.metadata.finalPrice)
       : null;
