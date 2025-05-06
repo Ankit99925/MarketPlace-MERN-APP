@@ -89,45 +89,56 @@ exports.createCheckoutSession = async (req, res) => {
   // Add debugging logs
   console.log("Creating checkout session with:");
   console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
+
+  // Update the return URL to use /payment-result instead of letting Stripe determine the path
   const returnUrl = `${process.env.FRONTEND_URL}/payment-result?status={CHECKOUT_SESSION_ID}`;
   console.log("Return URL:", returnUrl);
 
-  const session = await stripe.checkout.sessions.create({
-    metadata: {
-      finalPrice: finalPrice.toString(),
-    },
-    line_items: [
-      // Show each product individually
-      ...products.map((product) => ({
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: product.productName,
-          },
-          unit_amount: Math.round(product.price * 100),
-        },
-        quantity: 1,
-      })),
-      // Add the difference between finalPrice and subtotal as tax/shipping
-      {
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: "Tax and Shipping",
-            description: "Includes 10% tax and shipping fees",
-          },
-          unit_amount: Math.round((finalPrice - subtotal) * 100), // Use the difference
-        },
-        quantity: 1,
+  try {
+    const session = await stripe.checkout.sessions.create({
+      metadata: {
+        finalPrice: finalPrice.toString(),
       },
-    ],
-    mode: "payment",
-    ui_mode: "embedded",
-    return_url: returnUrl,
-  });
+      line_items: [
+        // Show each product individually
+        ...products.map((product) => ({
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: product.productName,
+            },
+            unit_amount: Math.round(product.price * 100),
+          },
+          quantity: 1,
+        })),
+        // Add the difference between finalPrice and subtotal as tax/shipping
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: "Tax and Shipping",
+              description: "Includes 10% tax and shipping fees",
+            },
+            unit_amount: Math.round((finalPrice - subtotal) * 100), // Use the difference
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      // Change to redirect mode instead of embedded to ensure proper routing
+      // ui_mode: "embedded",
+      success_url: `${process.env.FRONTEND_URL}/payment-result?status=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL}/payment-result?status=canceled`,
+    });
 
-  console.log("Stripe session created:", session.id);
-  res.send({ clientSecret: session.client_secret });
+    console.log("Stripe session created:", session.id);
+    // For redirect checkout, return the session ID instead of client secret
+    // res.send({ clientSecret: session.client_secret });
+    res.send({ id: session.id });
+  } catch (error) {
+    console.error("Error creating checkout session:", error);
+    res.status(500).json({ error: "Failed to create checkout session" });
+  }
 };
 
 exports.checkPaymentResult = async (req, res) => {
