@@ -58,17 +58,6 @@ app.use(passport.initialize());
 
 connectDB();
 
-// Add debug route to check environment variables
-app.get("/api/debug-env", (req, res) => {
-  console.log("Debug route accessed");
-  res.json({
-    frontendUrl: process.env.FRONTEND_URL,
-    corsOrigins: corsOptions.origin,
-    nodeEnv: process.env.NODE_ENV,
-    // Don't include sensitive information like API keys
-  });
-});
-
 app.use("/api/admin", isLoggedIn, isAdmin, adminRouter);
 app.use("/api/public", publicRouter);
 app.use("/api/auth", authRouter);
@@ -79,6 +68,4 @@ app.use(errorController.get404);
 
 app.listen(port, () => {
   console.log(`MarketPlace listening on port ${port}`);
-  console.log(`FRONTEND_URL set to: ${process.env.FRONTEND_URL}`);
-  console.log(`CORS origins:`, corsOptions.origin);
 });

@@ -29,8 +29,6 @@ const Checkout = () => {
 
       try {
         setLoading(true);
-        console.log("Starting checkout process");
-        console.log("API URL:", config.API_URL);
 
         // Create checkout session
         const { data } = await axios.post(
@@ -46,8 +44,6 @@ const Checkout = () => {
           }
         );
 
-        console.log("Session created, redirecting to Stripe");
-
         // Redirect to Stripe Checkout
         const stripe = await stripePromise;
         const { error } = await stripe.redirectToCheckout({
@@ -55,11 +51,9 @@ const Checkout = () => {
         });
 
         if (error) {
-          console.error("Stripe redirect error:", error);
           setError(error.message);
         }
       } catch (err) {
-        console.error("Error starting checkout:", err);
         setError("Failed to start checkout. Please try again.");
       } finally {
         setLoading(false);

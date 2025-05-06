@@ -86,15 +86,9 @@ exports.createCheckoutSession = async (req, res) => {
   const { products, finalPrice } = req.body;
   const subtotal = products.reduce((sum, product) => sum + product.price, 0);
 
-  // Add debugging logs
-  console.log("Creating checkout session with:");
-  console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
-
-  // Update URLs to match what's working in production
+  // Create URLs for Stripe redirects
   const successUrl = `${process.env.FRONTEND_URL}/index.html?status=success&session_id={CHECKOUT_SESSION_ID}`;
   const cancelUrl = `${process.env.FRONTEND_URL}/index.html?status=canceled`;
-  console.log("Success URL:", successUrl);
-  console.log("Cancel URL:", cancelUrl);
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -127,13 +121,12 @@ exports.createCheckoutSession = async (req, res) => {
         },
       ],
       mode: "payment",
-      // Use the URLs that are actually working in production
+      // Use the URLs that are working in production
       success_url: successUrl,
       cancel_url: cancelUrl,
     });
 
-    console.log("Stripe session created:", session.id);
-    // For redirect checkout, return the session ID
+    // Return the session ID
     res.send({ id: session.id });
   } catch (error) {
     console.error("Error creating checkout session:", error);
@@ -145,20 +138,13 @@ exports.checkPaymentResult = async (req, res) => {
   const { sessionId } = req.params;
   const userId = req.userId;
 
-  console.log("Checking payment result for session:", sessionId);
-  console.log("User ID:", userId);
-
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
-    console.log("Retrieved Stripe session:", {
-      id: session.id,
-      payment_status: session.payment_status,
-      metadata: session.metadata,
-    });
 
     const finalPrice = session.metadata.finalPrice
       ? parseFloat(session.metadata.finalPrice)
       : null;
+
     if (session.payment_status === "paid") {
       const user = await User.findById(userId).populate("cart");
       let totalAmount = 0;

@@ -12,10 +12,6 @@ const PaymentResult = () => {
   const [status, setStatus] = useState("processing");
 
   useEffect(() => {
-    console.log("PaymentResult component mounted");
-    console.log("Current location:", location.pathname + location.search);
-    console.log("Window location:", window.location.href);
-
     // Extract query parameters
     const queryParams = new URLSearchParams(
       location.search || window.location.search
@@ -23,12 +19,8 @@ const PaymentResult = () => {
     const resultStatus = queryParams.get("status");
     const sessionId = queryParams.get("session_id");
 
-    console.log("Status from URL:", resultStatus);
-    console.log("Session ID from URL:", sessionId);
-
     // Handle cancel status
     if (resultStatus === "canceled") {
-      console.log("Payment was canceled");
       setStatus("failed");
       setTimeout(() => {
         navigate("/cart");
@@ -43,7 +35,6 @@ const PaymentResult = () => {
       (resultStatus && resultStatus.startsWith("cs_") ? resultStatus : null);
 
     if (!finalSessionId) {
-      console.log("No session ID found, redirecting to cart");
       navigate("/cart");
       return;
     }
@@ -51,11 +42,9 @@ const PaymentResult = () => {
     const checkStatus = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
-        console.log("JWT token exists:", !!token);
 
         if (!token) {
           setStatus("error");
-          console.log("No JWT token, redirecting to cart");
           setTimeout(() => {
             navigate("/cart");
           }, 2000);
@@ -63,7 +52,6 @@ const PaymentResult = () => {
         }
 
         const apiUrl = `${config.API_URL}/api/customer/check-payment-result/${finalSessionId}`;
-        console.log("Making API request to:", apiUrl);
 
         const response = await axios.get(apiUrl, {
           withCredentials: true,
@@ -72,25 +60,19 @@ const PaymentResult = () => {
           },
         });
 
-        console.log("API response:", response.data);
-
         if (response.data.paymentDetails === "paid") {
-          console.log("Payment successful, redirecting to orders");
           setStatus("success");
           await dispatch(fetchCustomerData()).unwrap();
           setTimeout(() => {
             navigate("/orders");
           }, 2000);
         } else {
-          console.log("Payment failed, redirecting to cart");
           setStatus("failed");
           setTimeout(() => {
             navigate("/cart");
           }, 2000);
         }
       } catch (error) {
-        console.error("Error checking payment status:", error);
-        console.log("Error response:", error.response?.data);
         setStatus("error");
         setTimeout(() => {
           navigate("/cart");
