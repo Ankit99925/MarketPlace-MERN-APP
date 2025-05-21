@@ -13,6 +13,7 @@ const corsOptions = {
   origin: [
     "http://localhost:5173", // Development
     "http://localhost:4173", // Preview
+    "http://localhost:8084",
     process.env.FRONTEND_URL, // Production
   ].filter(Boolean),
   credentials: true,
