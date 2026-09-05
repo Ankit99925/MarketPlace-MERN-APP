@@ -10,10 +10,9 @@
   "author": "ankit",
   "license": "ISC",
   "dependencies": {
-    "@faker-js/faker": "^9.7.0",
     "@sendgrid/mail": "^8.1.4",
     "axios": "^1.8.3",
-    "bcrypt": "^5.1.1",
+    "bcrypt": "^6.0.0",
     "body-parser": "^1.20.3",
     "cloudinary": "^2.6.0",
     "cookie-parser": "^1.4.7",
@@ -23,13 +22,11 @@
     "express-rate-limit": "^7.5.0",
     "express-validator": "^7.2.1",
     "helmet": "^8.1.0",
-    "ioredis": "^1.0.11",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.14.2",
     "mongoose": "^8.13.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.10.0",
     "otp-generator": "^4.0.1",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
@@ -38,5 +35,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
-  }
+  },
+  "overrides": {
+  "qs": "^6.16.0"
+}
 }

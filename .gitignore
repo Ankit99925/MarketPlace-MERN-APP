@@ -28,3 +28,15 @@ MasterPlan.txt
 # /Frontend/package-lock.json
 # /Backend/package-lock.json 
  Frontend/tailwind-dashboard-template/
+# Coverage and caches
+coverage/
+.nyc_output/
+.eslintcache
+*.tsbuildinfo
+
+# OS
+Thumbs.db
+
+# Runtime
+*.pid
+*.seed

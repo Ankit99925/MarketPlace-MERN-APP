@@ -19,7 +19,7 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
-
+app.set("trust proxy", 1);
 const authRouter = require("./Routes/authRouter");
 const sellerRouter = require("./Routes/sellerRouter");
 const customerRouter = require("./Routes/customerRouter");

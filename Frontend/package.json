@@ -39,7 +39,7 @@
     "react-toastify": "^11.0.5",
     "react-transition-group": "^4.4.5",
     "redux-persist": "^6.0.0",
-    "swiper": "^11.2.6",
+    "swiper": "^14.2.0",
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
