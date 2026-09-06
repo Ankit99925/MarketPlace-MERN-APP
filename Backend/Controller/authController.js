@@ -161,7 +161,7 @@ exports.verifyOtp = async (req, res) => {
     if (!otpToken) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-    const decodedToken = jwt.verify(otpToken, process.env.JWT_SECRET);
+    const decodedToken = jwt.verify(otpToken, process.env.JWT_SECRET, { algorithms: ["HS256"] });
     if (!decodedToken) {
       return res.status(401).json({ error: "Unauthorized" });
     }
@@ -196,7 +196,7 @@ exports.verifyOtp = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   const { newPassword, confirmNewPassword } = req.body;
   const { otpToken } = req.cookies;
-  const decodedToken = jwt.verify(otpToken, process.env.JWT_SECRET);
+  const decodedToken = jwt.verify(otpToken, process.env.JWT_SECRET, { algorithms: ["HS256"] });
   const { email } = decodedToken;
   try {
     if (!email || !newPassword || !confirmNewPassword) {

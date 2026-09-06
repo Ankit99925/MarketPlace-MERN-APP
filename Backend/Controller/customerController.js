@@ -184,7 +184,7 @@ exports.getCustomerProfile = async (req, res) => {
 
 exports.updateCustomerProfile = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.userId;
     const imageUrl = req.fileUrl; // Get the uploaded image URL
     const { firstName, lastName, email } = req.body;
 

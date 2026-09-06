@@ -12,11 +12,11 @@ cloudinary.config({
 const deleteFromCloudinary = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const product = await Product.findById(id);
-    const imageUrl = product.imageUrl;
-    if (!imageUrl) {
-      return res.status(404).json({ message: "Image url not found" });
+    const product = await Product.findOne({ _id: id, seller: req.userId });
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
     }
+    const imageUrl = product.imageUrl;
     const getPublicId = (imageUrl) => {
       const parts = imageUrl.split("/");
       const fileName = parts[parts.length - 1]; // Get last part of URL (e.g., "abcd1234.jpg")

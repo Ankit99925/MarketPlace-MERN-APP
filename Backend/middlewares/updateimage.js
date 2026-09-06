@@ -26,8 +26,8 @@ const editUpdateToCloudinary = async (req, res, next) => {
 
   try {
     // Get the product to check existing image
-    const product = await Product.findById(id);
-    const user = await User.findById(id);
+    const product = await Product.findOne({ _id: id, seller: req.userId });
+    const user = product ? null : await User.findById(req.userId);
     if (product) {
       existingImageUrl = product.imageUrl;
     }
@@ -56,7 +56,7 @@ const editUpdateToCloudinary = async (req, res, next) => {
             return;
           }
           resolve(result);
-        }
+        },
       );
 
       streamifier.createReadStream(req.file.buffer).pipe(stream);
