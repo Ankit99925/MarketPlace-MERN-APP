@@ -25,8 +25,8 @@ exports.getSellerOrders = async (req, res) => {
         (item) =>
           item.product &&
           item.product.seller &&
-          item.product.seller.toString() === sellerId
-      )
+          item.product.seller.toString() === sellerId,
+      ),
     );
 
     res.status(200).json({ orders: sellerOrders });
@@ -143,11 +143,15 @@ exports.editProduct = async (req, res) => {
       tags: parsedTags,
     };
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      id,
+    const updatedProduct = await Product.findOneAndUpdate(
+      { _id: id, seller: req.userId },
       updateData,
-      { new: true } // Return the updated document
+      { new: true },
     );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
 
     res.status(201).json({
       product: updatedProduct,
@@ -160,17 +164,19 @@ exports.editProduct = async (req, res) => {
 
 exports.deleteProduct = async (req, res) => {
   const { id } = req.params;
-  const product = await Product.findById(id);
+  const product = await Product.findOneAndDelete({
+    _id: id,
+    seller: req.userId,
+  });
   if (!product) {
     return res.status(404).json({ message: "Product not Found" });
   }
-  await Product.deleteOne({ _id: id });
   res.status(200).json({ message: "Product deleted Successfully" });
 };
 
 exports.getSellerProfile = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.userId;
 
     // Validate ID before querying
     if (!id || id === "undefined") {
@@ -225,7 +231,7 @@ exports.updateSellerProfile = async (req, res) => {
     const profile = await User.findByIdAndUpdate(
       id,
       updateData,
-      { new: true } // Return updated document
+      { new: true }, // Return updated document
     );
 
     res.status(200).json({
