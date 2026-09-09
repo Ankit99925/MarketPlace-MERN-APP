@@ -1,6 +1,9 @@
 const Product = require("../models/productModel");
 const mongoose = require("mongoose");
 
+// Escape regex metacharacters to prevent ReDoS via user-supplied patterns
+const escapeRegex = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 const filterAndSearchProducts = async (req, res) => {
   // Get userType from req if it exists
   const userType = req.userId ? "protected" : "public";
@@ -31,13 +34,13 @@ const filterAndSearchProducts = async (req, res) => {
   // 3. Text search filters (case-insensitive)
   if (search) {
     filter.productName = {
-      $regex: `^${search}`,
+      $regex: `^${escapeRegex(search)}`,
       $options: "i", // case-insensitive
     };
   }
   if (brand) {
     filter.brand = {
-      $regex: brand,
+      $regex: escapeRegex(brand),
       $options: "i", // case-insensitive
     };
   }
